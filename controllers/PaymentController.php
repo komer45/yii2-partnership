@@ -78,18 +78,20 @@ class PaymentController extends Controller
     public function actionCreate()
     {
 		$recoils = $_POST["recoils"];
-		$hello = PsOrderHistory::find()->where(['partner_id' => Yii::$app->user->id, 'status' => 0])->all();
-		foreach ($hello as $privet)
+		if ($recoils>=300)
 		{
-			$privet->status = 1;
-			$privet->update();
+			$hello = PsOrderHistory::find()->where(['partner_id' => Yii::$app->user->id, 'status' => 0])->all();
+			foreach ($hello as $privet)
+			{
+				$privet->status = 1;
+				$privet->update();
+			}
+			$pay= NEW PsPayment;
+			$pay->sum = $recoils;
+			$pay->partner_id = PsPartner::find()->where(['partner_id' => Yii::$app->user->id])->one()->id;
+			$pay->date = date('Y-m-d');
+			$pay->save();
 		}
-		$pay= NEW PsPayment;
-		$pay->sum = $recoils;
-		$pay->partner_id = PsPartner::find()->where(['partner_id' => Yii::$app->user->id])->one()->id;
-		$pay->date = date('Y-m-d');
-		$pay->save();
-		
 		return $this->redirect('/partnership/payment/index?payment=payed');
     }
 
