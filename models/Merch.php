@@ -85,4 +85,10 @@ class Merch extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
         ];
     }
 	
+	
+	public function minusAmount()
+    {
+        return NULL;
+    }
+	
 }

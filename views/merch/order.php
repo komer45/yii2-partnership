@@ -7,5 +7,5 @@ use pistol88\order\widgets\OrderForm;
 use komer45\partnership\controllers\ProductController;
 ?>
 
-<h3>Форма заказа:</h3>							<?//перенести в отдельную вьюху?>
+<h3>Форма заказа:</h3>
 <? echo OrderForm::widget(); ?>

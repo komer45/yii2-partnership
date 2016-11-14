@@ -58,6 +58,11 @@ class MerchController extends Controller
         return $this->render('order');
     }
 	
+	public function actionThanks()
+    {
+        return $this->render('thanks');
+    }
+	
     /**
      * Displays a single Merch model.
      * @param integer $id
