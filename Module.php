@@ -12,7 +12,6 @@ use komer45\partnership\models\PsOrderHistory;
 class Module extends \yii\base\Module
 {
 //public $layoutPath = 'C:\OpenServer\domains\yii2-starter-kit\common\modules\komer45\yii2-partnership\views\layouts';
-public $min = 300;
 	public function onOrderCreate(OrderEvent $event)
 	{
 		$model = new PsOrderHistory;

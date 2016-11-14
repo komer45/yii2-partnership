@@ -6,7 +6,6 @@ use komer45\partnership\models\PsPartner;
 use pistol88\order\models\Order;
 ?>
 <?php
-$min = 300;
 $pid = Yii::$app->user->id;												
 if ($partner = PsPartner::find()->where(['partner_id' => $pid])->one())  //идентифицируем пользователя
 {
@@ -42,7 +41,7 @@ if ($partner = PsPartner::find()->where(['partner_id' => $pid])->one())  //ид�
 	
 	if ($recoils>0)
 		echo 'Общая сумма Ваших отчислений составляет: '.$recoils.'р.';
-	if ($recoils>=$min)
+	if ($recoils>=Yii::$app->params['min'])
 	{
 		echo "<form action='/partnership/payment/create' method='POST'>";
 			echo "<input type=submit name='button' value=Получить>";

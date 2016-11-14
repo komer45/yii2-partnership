@@ -78,7 +78,7 @@ class PaymentController extends Controller
     public function actionCreate()
     {
 		$recoils = $_POST["recoils"];
-		if ($recoils>=300)
+		if ($recoils>=Yii::$app->params['min'])
 		{
 			$hello = PsOrderHistory::find()->where(['partner_id' => Yii::$app->user->id, 'status' => 0])->all();
 			foreach ($hello as $privet)

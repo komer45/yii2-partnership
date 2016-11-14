@@ -14,7 +14,6 @@ use Yii;
  */
 class PsPayment extends \yii\db\ActiveRecord
 {
-	public $min = 300;
     /**
      * @inheritdoc
      */

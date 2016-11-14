@@ -19,6 +19,7 @@ class Bootstrap implements BootstrapInterface
         }
 		$app->on('beforeAction', function() use ($app)
 		{
+			Yii::$app->params['min'] = 300;
 			$request = Yii::$app->request;
 			$ref_to = Url::current();								//сюда перешел пользователь (страниця по пересылке)
 			$user_id = Yii::$app->user->id;							//получаем id юзера
