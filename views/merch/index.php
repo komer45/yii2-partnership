@@ -23,7 +23,7 @@ use pistol88\cart\widgets\ChangeOptions;
 <?//= TruncateButton::widget(['text' => 'Очистить']); ?>
 <?=ElementsList::widget(['type' => ElementsList::TYPE_DROPDOWN]);?>
 
-	<form action='/partnership/merch/order' method='POST'>
+	<form action='merch/order' method='POST'>
         <div class="form-group">
             <?= Html::submitButton('Заказать', ['class' => 'btn btn-primary']) ?>
         </div>
