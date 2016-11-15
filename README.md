@@ -55,7 +55,7 @@ php yii migrate --migrationPath=vendor/komer45/yii2-partnership/migrations
 <?php
 use komer45\partnership\widgets\OrderWidget;
 use komer45\partnership\widgets\PaymentWidget;
-
-OrderWidget::widget();		//Виджет заказа
-PaymentWidget::widget()		//Виджет выплат
+?>
+<?=OrderWidget::widget();?>		//Виджет заказа
+<?=PaymentWidget::widget();?>	//Виджет выплат
 ```
