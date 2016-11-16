@@ -9,26 +9,26 @@ use komer45\partnership\models\PsPartner;
 
 class Partnership extends \yii\base\Component
 {	
-	public function getFollow($user)
+	public function getFollows($userId)
 	{
-		$follow = PsFollow::find()->where(['user_id' => $user])->all();
+		$follow = PsFollow::find()->where(['user_id' => $userId])->all();
 		return $follow;
 	}
 
-	public function addFollow($user_id, $url_from, $url_to, $ip, $partner)
+	public function addFollow($userId, $urlFrom, $urlTo, $ip, $partner)
 	{
 		$addFollow = new PsFollow;
 		$tmp =	strval(Yii::$app->request->cookies['tmp_user_id']);
 		$addFollow->ip = $ip;
-		$addFollow->user_id = $user_id;
-		if ($user_id == NULL)										
+		$addFollow->user_id = $userId;
+		if ($userId == NULL)										
 			$addFollow->tmp_user_id = $tmp;	
 		else 
 			$addFollow->tmp_user_id = NULL;
-		$addFollow->url_to = $url_to;
+		$addFollow->url_to = $urlTo;
 		$addFollow->partner_id = $_SESSION['code'];
 		$addFollow->date = date('Y-m-d');
-		$addFollow->url_from = $url_from;
+		$addFollow->url_from = $urlFrom;
 		$part = psPartner::find()->where(['code' => $_SESSION['code']])->one();
 		if ($part)		//записываем в psFollow только тогда, когда уверены в том, что партнер записан в базе, а такого юзера еще нет 
 		{	

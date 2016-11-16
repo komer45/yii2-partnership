@@ -3,7 +3,7 @@
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m161116_092512_Mass extends Migration
+class m161116_091812_create_table_ps_follow extends Migration
 {
 
     public function init()
@@ -17,11 +17,15 @@ class m161116_092512_Mass extends Migration
         $tableOptions = 'ENGINE=InnoDB';
         $transaction=$this->db->beginTransaction();
         try{
-             $this->createTable('{{%ps_payment}}',[
+             $this->createTable('{{%ps_follow}}',[
                'id'=> $this->primaryKey(11),
-               'sum'=> $this->decimal(11, 2)->null()->defaultValue(null),
-               'date'=> $this->date()->null()->defaultValue(null),
-               'partner_id'=> $this->integer(11)->null()->defaultValue(null),
+               'ip'=> $this->string(55)->notNull(),
+               'user_id'=> $this->integer(11)->null()->defaultValue(null),
+               'tmp_user_id'=> $this->string(55)->null()->defaultValue(null),
+               'url_to'=> $this->string(55)->notNull(),
+               'url_from'=> $this->string(55)->null()->defaultValue(null),
+               'partner_id'=> $this->integer(11)->notNull(),
+               'date'=> $this->date()->notNull(),
             ], $tableOptions);
             $transaction->commit();
         } catch (Exception $e) {
@@ -34,7 +38,7 @@ class m161116_092512_Mass extends Migration
     {
         $transaction=$this->db->beginTransaction();
         try{
-            $this->dropTable('{{%ps_payment}}');
+            $this->dropTable('{{%ps_follow}}');
             $transaction->commit();
         } catch (Exception $e) {
             echo 'Catch Exception '.$e->getMessage().' and rollBack this';

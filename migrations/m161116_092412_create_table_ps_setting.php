@@ -3,7 +3,7 @@
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m161116_092612_Mass extends Migration
+class m161116_092412_create_table_ps_setting extends Migration
 {
 
     public function init()
@@ -17,11 +17,10 @@ class m161116_092612_Mass extends Migration
         $tableOptions = 'ENGINE=InnoDB';
         $transaction=$this->db->beginTransaction();
         try{
-             $this->createTable('{{%merch}}',[
+             $this->createTable('{{%ps_setting}}',[
                'id'=> $this->primaryKey(11),
-               'name'=> $this->string(55)->notNull(),
-               'price'=> $this->float()->null()->defaultValue(null),
-               'comment'=> $this->text()->null()->defaultValue(null),
+               'sum'=> $this->integer(11)->notNull(),
+               'percent'=> $this->double()->null()->defaultValue(null),
             ], $tableOptions);
             $transaction->commit();
         } catch (Exception $e) {
@@ -34,7 +33,7 @@ class m161116_092612_Mass extends Migration
     {
         $transaction=$this->db->beginTransaction();
         try{
-            $this->dropTable('{{%merch}}');
+            $this->dropTable('{{%ps_setting}}');
             $transaction->commit();
         } catch (Exception $e) {
             echo 'Catch Exception '.$e->getMessage().' and rollBack this';
