@@ -49,7 +49,37 @@ php yii migrate --migrationPath=vendor/komer45/yii2-partnership/migrations
 		//...
 	]
 ```
-Для того, чтобы совершить заказ (клиент) и получить отчисления (партнер) нужно подключить виджеты:
+Для того, чтобы подписаться на совершение покупки необходимо в конфиге прописать следующий код для модуля order:
+
+```php
+<?php
+...
+'order' => [
+		'class' => 'pistol88\order\Module',
+		///...
+		'on create' => ['komer45\partnership\Module', 'onOrderCreate'],
+```
+Так жe для перевода пользователя из незарегистрированного в зарегистрированного в контроллере user (\common\models\user) необходимо дописать следующий кодкод в методе afterSignup(array $profileData = []):
+
+```php
+<?php
+...
+use komer45\partnership\models\PsFollow;
+...
+public function afterSignup(array $profileData = [])
+{
+	$reFollow = PsFollow::find()->where(['tmp_user_id' => Yii::$app->request->cookies['tmp_user_id']])->one();
+	$reFollow->tmp_user_id = NULL;
+	$reFollow->user_id = $this->getId();
+	if ($reFollow->validate())
+	{
+		$reFollow->save();
+	}
+	//...
+}
+```
+
+Для того, чтобы совершить заказ (клиент) и получить отчисления (партнер) можно подключить виджеты:
 
 ```php
 <?php

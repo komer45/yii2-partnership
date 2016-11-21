@@ -19,7 +19,7 @@ class Bootstrap implements BootstrapInterface
         }
 		$app->on('beforeAction', function() use ($app)
 		{
-			//Yii::$app->params['min'] = 300;
+			Yii::$app->params['min'] = 300;
 			$request = Yii::$app->request;
 			$refTo = Url::current();								//сюда перешел пользователь (страниця по пересылке)
 			$userId = Yii::$app->user->id;							//получаем id юзера
@@ -28,13 +28,11 @@ class Bootstrap implements BootstrapInterface
 			$ip =  $_SERVER["REMOTE_ADDR"];							//определяем ip юзера
 			$partnercode = PsPartner::find()->where(['code' => $_GET['code']])->one();			//находим партнера
 			$_SESSION['code'] = $partnercode->code;						//запишем код партнера в сессию
-			$fortmp = $ip+microtime();								//дадим незарегистрированному юзеру определитель - свяжем его ip с микровременем
-			$cache = md5($fortmp);
 			/*проведем работу с coockie*/
 			if (!isset(Yii::$app->request->cookies['tmp_user_id'])) {
 				Yii::$app->response->cookies->add(new \yii\web\Cookie([
 					'name' => 'tmp_user_id',
-					'value' => $cache
+					'value' => md5($ip+microtime())
 				]));
 			} 
 			/*закончим работу с coockie*/		
