@@ -57,9 +57,46 @@ php yii migrate --migrationPath=vendor/komer45/yii2-partnership/migrations
 'order' => [
 		'class' => 'pistol88\order\Module',
 		///...
-		'on create' => ['komer45\partnership\Module', 'onOrderCreate'],
+		'on create' =>function($event) {
+			//..
+			$model = new \komer45\partnership\models\PsOrderHistory;
+			$tmp =	strval(Yii::$app->request->cookies['tmp_user_id']);
+			if (!Yii::$app->user->isGuest){				//сли пользователь зарегистрирован
+				$model->user_id = Yii::$app->user->id;
+				$follow = \komer45\partnership\models\PsFollow::find()->where(['user_id' => $model->user_id])->one();
+				$part   = \komer45\partnership\models\PsFollow::find()->where(['user_id' => Yii::$app->user->id])->one();
+			} else {									//иначе - если все-таки гость
+				$model->tmp_user_id = $tmp;
+				$follow = \komer45\partnership\models\PsFollow::find()->where(['tmp_user_id' => $model->tmp_user_id])->one();
+				$part   = \komer45\partnership\models\PsFollow::find()->where(['tmp_user_id' => $tmp])->one();
+			}		
+			$partner = \komer45\partnership\models\PsPartner::find()->where(['code' => $part->partner_id])->one(); //находим партнера по коду
+			$model->partner_id = $partner->id;
+			$model->sum = $event->model->cost;
+			$model->date = date('Y-m-d');
+			$model->order_id = $event->model->id;
+			$model->follow_id = strval($follow->id);	//сюда нужно записать id таблицы ps_follow
+				$forperc = \komer45\partnership\models\PsSetting::find()->all();
+				foreach ($forperc as $search)
+				{
+					if ($search->sum >= $model->sum)
+					{
+						$percent = (($model->sum)/100*$search->percent);
+						break;
+					}
+				}
+				$model->recoil = $percent;
+				$model->status = 0;
+			if ($model->validate())
+			{
+				$model->save();
+			}
+			//..
+		},
+		//..
+]
 ```
-Так жe для перевода пользователя из незарегистрированного в зарегистрированного в контроллере user (\common\models\user) необходимо дописать следующий кодкод в методе afterSignup(array $profileData = []):
+Так жe для перевода пользователя из незарегистрированного в зарегистрированного в контроллере user (\common\models\user) необходимо дописать следующий код в методе afterSignup(array $profileData = []):
 
 ```php
 <?php
