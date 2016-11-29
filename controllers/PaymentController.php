@@ -21,11 +21,16 @@ class PaymentController extends Controller
         return [
 			'access' => [
 				'class' => \yii\filters\AccessControl::className(),
-				'only' => ['index', 'order'],
-				'rules' => [
+				'rules' => [				//организуем доступ для двух рахых ролей
                     [
                         'allow' => true,	//true - Указанная роль имеет доступ к указанной странице; false - Указанная роль не имеет доступ к указанной странице.
-                        'roles' => ['@'],	//РОЛИ(-Ъ), которые имеют доступ к странице
+                        'actions' => ['index', 'create'],
+						'roles' => ['@'],	//РОЛИ(-Ъ), которые имеют доступ к странице
+                    ],
+					[
+                        'allow' => true,	//true - Указанная роль имеет доступ к указанной странице; false - Указанная роль не имеет доступ к указанной странице.
+                        'actions' => ['admin', 'create'],
+						'roles' => ['administrator'],	//РОЛИ(-Ъ), которые имеют доступ к странице
                     ],
                 ],
             ],
@@ -52,10 +57,9 @@ class PaymentController extends Controller
         ]);
     }
 
-	public function actionDone()
+	public function actionAdmin()
 	 {
-		//$model = PsPayment::find()->one();
-		return $this->render('done');
+		return $this->render('admin');
 	 }
 	
     /**
@@ -77,21 +81,42 @@ class PaymentController extends Controller
      */
     public function actionCreate()
     {
-		$recoils = $_POST["recoils"];
-		if ($recoils>=Yii::$app->params['min'])
-		{
-			$hello = PsOrderHistory::find()->where(['partner_id' => Yii::$app->user->id, 'status' => 0])->all();
-			foreach ($hello as $privet)
+		//echo 'Hello';
+		$recoils = Yii::$app->params['recoils'];
+		//if ($recoils>=Yii::$app->params['min'])
+		//{
+			//echo Yii::$app->session['use'];
+			
+			
+			if (Yii::$app->session['use'] == 2)
 			{
-				$privet->status = 1;
-				$privet->update();
+				$hello = PsOrderHistory::find()->where(['partner_id' => Yii::$app->session['par'], 'status' => '+1'])->all();
+				$payment = PsPayment::find()->where(['id' => Yii::$app->session['pay']])->one();
+				foreach ($hello as $privet)
+				{
+					$privet->status = 1;
+					$privet->update();
+				}
+				$payment->status = 1;
+				$payment->update();
 			}
-			$pay= NEW PsPayment;
-			$pay->sum = $recoils;
-			$pay->partner_id = PsPartner::find()->where(['partner_id' => Yii::$app->user->id])->one()->id;
-			$pay->date = date('Y-m-d');
-			$pay->save();
-		}
+			elseif (Yii::$app->session['use'] == 1) 
+			{
+				$hello = PsOrderHistory::find()->where(['partner_id' => Yii::$app->session['par'], 'status' => 0])->all();
+				foreach ($hello as $privet)
+				{
+					$privet->status = '+1';
+					$privet->update();
+				}
+				
+				$pay= NEW PsPayment;
+				$pay->sum = $recoils;
+				$pay->partner_id = PsPartner::find()->where(['partner_id' => Yii::$app->user->id])->one()->id;
+				$pay->date = date('Y-m-d');
+				$pay->status = 0;
+				$pay->save();
+			}
+		//}
 		return $this->redirect('/partnership/payment/index?payment=payed');
     }
 

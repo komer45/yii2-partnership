@@ -30,7 +30,7 @@ class PsPayment extends \yii\db\ActiveRecord
         return [
             [['sum'], 'number'],
 			[['date'],'safe'],
-            [['partner_id'], 'integer'],
+            [['partner_id', 'status'], 'integer'],
         ];
     }
 

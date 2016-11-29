@@ -26,14 +26,14 @@ class Partnership extends \yii\base\Component
 		else 
 			$addFollow->tmp_user_id = NULL;
 		$addFollow->url_to = $urlTo;
-		$addFollow->partner_id = $_SESSION['code'];
+		$addFollow->partner_id = Yii::$app->session['code'];
 		$addFollow->date = date('Y-m-d');
 		$addFollow->url_from = $urlFrom;
-		$part = psPartner::find()->where(['code' => $_SESSION['code']])->one();
+		$part = psPartner::find()->where(['code' => Yii::$app->session['code']])->one();
 		if ($part)		//записываем в psFollow только тогда, когда уверены в том, что партнер записан в базе, а такого юзера еще нет 
 		{	
 			if (!Yii::$app->user->isGuest)
-				$followsarch = psFollow::find()->where(['user_id' => $user_id])->one();
+				$followsarch = psFollow::find()->where(['user_id' => $userId])->one();
 			else
 				$followsarch = psFollow::find()->where(['ip' => $ip, 'tmp_user_id' => $tmp])->one();
 				if(!$followsarch){ 								//записываем в базу только тогда, когда уверены, что нет совпадений (юзер не найден)

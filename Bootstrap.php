@@ -13,7 +13,7 @@ class Bootstrap implements BootstrapInterface
 {
     public function bootstrap($app)	//$app - сервис локатор
     {
-			
+		//Yii::$app->session
         if(!$app->has('Partnership')) {
             $app->set('Partnership', ['class' => '\komer45\partnership\Partnership']);
         }
@@ -24,10 +24,10 @@ class Bootstrap implements BootstrapInterface
 			$refTo = Url::current();								//сюда перешел пользователь (страниця по пересылке)
 			$userId = Yii::$app->user->id;							//получаем id юзера
 			$refFrom = Yii::$app->request->referrer;				//ссылаемся на предыдущую страницу $_SERVER['HTTP_REFERER'];
-			$_SESSION['url_from'] = $refFrom;						//записываем переход в сессию 
+			Yii::$app->session['url_from'] = $refFrom;						//записываем переход в сессию
 			$ip =  $_SERVER["REMOTE_ADDR"];							//определяем ip юзера
 			$partnercode = PsPartner::find()->where(['code' => $_GET['code']])->one();			//находим партнера
-			$_SESSION['code'] = $partnercode->code;						//запишем код партнера в сессию
+			Yii::$app->session['code'] = $partnercode->code;						//запишем код партнера в сессию
 			/*проведем работу с coockie*/
 			if (!isset(Yii::$app->request->cookies['tmp_user_id'])) {
 				Yii::$app->response->cookies->add(new \yii\web\Cookie([
