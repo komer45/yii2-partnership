@@ -14,7 +14,8 @@ if ($partner = PsPartner::find()->where(['partner_id' => $pid])->one())  //ид�
 {
 	$payments = PsPayment::find()->where(['partner_id' => $partner->id])->all();
 	
-	if ($payments){
+	if ($payments)
+	{
 		echo '<table cellpadding=10>';
 		echo '<tr>
 				<td>№ Выплаты</td>
@@ -31,7 +32,7 @@ if ($partner = PsPartner::find()->where(['partner_id' => $pid])->one())  //ид�
 			echo '<td>'.$payment->date.'</td>';
 			echo '<td>'.PsPartner::find()->where(['partner_id' => $payment->partner_id])->one()->code.'</td>';
 			if ($payment->status == 0)			//партнер сделал запрос на получение выплаты
-			{	
+			{
 				echo "<form action='/partnership/payment/create' method='POST'>";
 					echo '<td>Ожидание</td>';
 					Yii::$app->session['use'] = '2';
