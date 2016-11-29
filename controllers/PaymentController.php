@@ -82,7 +82,7 @@ class PaymentController extends Controller
     public function actionCreate()
     {
 		//echo 'Hello';
-		$recoils = Yii::$app->params['recoils'];
+		$recoils = Yii::$app->session['recoils'];
 		//if ($recoils>=Yii::$app->params['min'])
 		//{
 			//echo Yii::$app->session['use'];
