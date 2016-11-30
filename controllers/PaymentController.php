@@ -99,6 +99,7 @@ class PaymentController extends Controller
 				}
 				$payment->status = 1;
 				$payment->update();
+				return $this->redirect('/partnership/payment/admin');
 			}
 			elseif (Yii::$app->session['use'] == 1) 
 			{
@@ -115,9 +116,9 @@ class PaymentController extends Controller
 				$pay->date = date('Y-m-d');
 				$pay->status = 0;
 				$pay->save();
+				return $this->redirect('/partnership/payment/index?payment=payed');
 			}
 		//}
-		return $this->redirect('/partnership/payment/index?payment=payed');
     }
 
     /**
