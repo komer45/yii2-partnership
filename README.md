@@ -116,13 +116,15 @@ public function afterSignup(array $profileData = [])
 }
 ```
 
-Для того, чтобы совершить заказ (клиент) и получить отчисления (партнер) можно подключить виджеты:
+Для того, чтобы совершить заказ (клиент), запросить выплату (партнер), выплатить (администратор) можно подключить виджеты:
 
 ```php
 <?php
 use komer45\partnership\widgets\OrderWidget;
 use komer45\partnership\widgets\PaymentWidget;
+use komer45\partnership\widgets\AdminWidget;
 ?>
 <?=OrderWidget::widget();?>		//Виджет заказа
-<?=PaymentWidget::widget();?>	//Виджет выплат
+<?=PaymentWidget::widget();?>	//Виджет выплат (партнер - оставить заявку на выплату)
+<?=AdminWidget::widget();?>		//Виджет выплат (администратор - выплаты по заявкам)
 ```
