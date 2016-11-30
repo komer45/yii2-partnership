@@ -17,7 +17,7 @@ class OrderWidget extends \yii\base\Widget
 	public function run()
     {
 	?>
-		<form action='/partnership/merch' method='POST'>
+		<form action='/partnership/merch'>
 			<div class="form-group">
 				<?=Html::submitButton('Order', ['class' => 'btn btn-primary', 'data-href' => Url::toRoute(['/partnership/merch'])]);?>
 			</div>
