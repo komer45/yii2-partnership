@@ -15,8 +15,7 @@ class m161116_091912_create_table_ps_order_history extends Migration
     public function safeUp()
     {
         $tableOptions = 'ENGINE=InnoDB';
-        $transaction=$this->db->beginTransaction();
-        try{
+
              $this->createTable('{{%ps_order_history}}',[
                'id'=> $this->primaryKey(11),
                'user_id'=> $this->integer(11)->null()->defaultValue(null),
@@ -29,22 +28,14 @@ class m161116_091912_create_table_ps_order_history extends Migration
                'status'=> $this->text()->null()->defaultValue(null),
                'partner_id'=> $this->integer(11)->null()->defaultValue(null),
             ], $tableOptions);
-            $transaction->commit();
-        } catch (Exception $e) {
-             echo 'Catch Exception '.$e->getMessage().' and rollBack this';
-             $transaction->rollBack();
-        }
+
     }
 
     public function safeDown()
     {
-        $transaction=$this->db->beginTransaction();
-        try{
+
             $this->dropTable('{{%ps_order_history}}');
             $transaction->commit();
-        } catch (Exception $e) {
-            echo 'Catch Exception '.$e->getMessage().' and rollBack this';
-            $transaction->rollBack();
-        }
+
     }
 }

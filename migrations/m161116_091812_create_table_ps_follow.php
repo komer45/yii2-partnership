@@ -15,8 +15,6 @@ class m161116_091812_create_table_ps_follow extends Migration
     public function safeUp()
     {
         $tableOptions = 'ENGINE=InnoDB';
-        $transaction=$this->db->beginTransaction();
-        try{
              $this->createTable('{{%ps_follow}}',[
                'id'=> $this->primaryKey(11),
                'ip'=> $this->string(55)->notNull(),
@@ -27,11 +25,6 @@ class m161116_091812_create_table_ps_follow extends Migration
                'partner_id'=> $this->integer(11)->notNull(),
                'date'=> $this->date()->notNull(),
             ], $tableOptions);
-            $transaction->commit();
-        } catch (Exception $e) {
-             echo 'Catch Exception '.$e->getMessage().' and rollBack this';
-             $transaction->rollBack();
-        }
     }
 
     public function safeDown()
