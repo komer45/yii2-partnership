@@ -3,41 +3,41 @@
 namespace komer45\partnership\controllers;
 
 use Yii;
-use komer45\partnership\models\PsFollow;
+use komer45\partnership\models\Follow;
+use komer45\partnership\models\Partner;
 use komer45\partnership\models\SearchFollow;
+use komer45\partnership\models\SearchPartner;
+//use common\models\User;
+//use komer45\partnership\interfaces\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+
 
 /**
- * FollowController implements the CRUD actions for PsFollow model.
+ * FollowController implements the CRUD actions for Follow model.
  */
 class FollowController extends Controller
 {
     public function behaviors()
     {
         return [
-			'access' => [
-				'class' => \yii\filters\AccessControl::className(),
-				'only' => ['index'],
-				'rules' => [
+            'access' => [
+                //'class' => AccessControl::className(),
+				'class' => AccessControl::className(),
+                'rules' => [
                     [
-                        'allow' => true,	//true - Указанная роль имеет доступ к указанной странице; false - Указанная роль не имеет доступ к указанной странице.
-                        'roles' => ['@'],	//РОЛИ(-Ъ), которые имеют доступ к странице
+                        'allow' => true,
+                        'roles' => $this->module->adminRoles,
                     ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
+                ]
             ],
         ];
     }
 
     /**
-     * Lists all PsFollow models.
+     * Lists all Follow models.
      * @return mixed
      */
     public function actionIndex()
@@ -45,32 +45,77 @@ class FollowController extends Controller
         $searchModel = new SearchFollow();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
+		
+		$partner = Partner::find()->where(['user_id' => Yii::$app->user->id])->one();
+        $model = Follow::find()->where(['partner' => $partner->code])->all();
+		return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'model' => $model
         ]);
     }
+	
+	
+	public function actionReferals()
+	{
+		$partner = Partner::find()->where(['user_id' => Yii::$app->user->id])->one();
+        $follows = Follow::find()->where(['partner' => $partner->code])->all();
+		$users = User::find()->all();
 
+		return $this->render('index',[
+			'follows' => $follows,
+			'users' => $users
+		]);
+	}
+	
+	
+    public function actionAdmin()
+    {
+		//$partner = Partner::find()->all();
+        //$model = Follow::find()->all();
+		$searchModel = new SearchFollow();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$dataProvider->sort->defaultOrder = ['id' => SORT_DESC];
+		
+		
+		return $this->render('admin', [
+			//'partner' => $partner,
+			//'model' => $model
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider
+			
+		]);
+	}
+	
     /**
-     * Displays a single PsFollow model.
+     * Displays a single Follow model.
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView($id, $pCode)	//id партнера, pCode партнера
     {
+		//die('hello!');
+        $partnerSearchModel = new SearchFollow();
+        $partnerDataProvider = $partnerSearchModel->search(Yii::$app->request->queryParams);
+		$partnerDataProvider->query->andWhere(['partner' => $pCode]);
+		//$partnerDataProvider->sort->defaultOrder = ['id' => SORT_DESC];
+		
+		
         return $this->render('view', [
-            'model' => $this->findModel($id),
+			'DataProvider' => $partnerDataProvider,
+			'SearchModel' => $partnerSearchModel,
+            'model' => $this->findPartner($id)
         ]);
     }
 
     /**
-     * Creates a new PsFollow model.
+     * Creates a new Follow model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new PsFollow();
+        $model = new Follow();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -82,7 +127,7 @@ class FollowController extends Controller
     }
 
     /**
-     * Updates an existing PsFollow model.
+     * Updates an existing Follow model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -101,7 +146,7 @@ class FollowController extends Controller
     }
 
     /**
-     * Deletes an existing PsFollow model.
+     * Deletes an existing Follow model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -114,18 +159,60 @@ class FollowController extends Controller
     }
 
     /**
-     * Finds the PsFollow model based on its primary key value.
+     * Finds the Follow model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return PsFollow the loaded model
+     * @return Follow the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = PsFollow::findOne($id)) !== null) {
+        if (($model = Follow::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+	
+	protected function findPartner($id)
+    {
+        if (($model = Partner::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+	
+	
+	public function actionActivate($followId)	//для админа - активировать/деактивироваиь переход
+    {
+		$model = Follow::find()->where(['id' => $followId])->one();
+		$model->status = 1;
+		$model->update();
+		return $this->redirect(Yii::$app->request->referrer);
+	}
+	
+	public function actionDeactivate($followId)	//для админа - активировать/деактивироваиь переход
+    {
+		$model = Follow::find()->where(['id' => $followId])->one();
+		$model->status = 0;
+		$model->update();
+		return $this->redirect(Yii::$app->request->referrer);
+	}
+	
+	
+	/*
+	public function actionActivate($statusTo, $id)	//id follow
+    {
+		$model = Follow::find()->where(['id' => $partner])->one();
+		if ($statusTo == 0){
+			$model->status = 0;
+		}elseif ($statusTo == 1){
+			$model->status = 1;
+		}
+		$model->update();
+		return $this->redirect('admin');
+	}
+	*/
+	
 }

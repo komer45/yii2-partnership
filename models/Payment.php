@@ -12,7 +12,7 @@ use Yii;
  * @property integer $partner_id
  * @property integer $order_id
  */
-class PsPayment extends \yii\db\ActiveRecord
+class Payment extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -41,9 +41,9 @@ class PsPayment extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'sum' => 'Sum',
-            'partner_id' => 'Partner ID',
-            'date' => 'Date',
+            'sum' => 'Сумма',
+            'partner_id' => 'Id партнера',
+            'date' => 'Дата',
         ];
     }
 }

@@ -11,7 +11,7 @@ use Yii;
  * @property integer $sum
  * @property integer $percent
  */
-class PsSetting extends \yii\db\ActiveRecord
+class Setting extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -40,8 +40,8 @@ class PsSetting extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'sum' => 'Sum',
-            'percent' => 'Percent',
+            'sum' => 'Сумма',
+            'percent' => 'Процент',
         ];
     }
 }

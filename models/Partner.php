@@ -5,13 +5,13 @@ namespace komer45\partnership\models;
 use Yii;
 
 /**
- * This is the model class for table "ps_partner".
+ * This is the model class for table "_partner".
  *
  * @property integer $id
  * @property integer $user_id
  * @property string $code
  */
-class PsPartner extends \yii\db\ActiveRecord
+class Partner extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -28,7 +28,7 @@ class PsPartner extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'code'], 'required'],
-            [['user_id'], 'integer'],
+            [['user_id', 'status'], 'integer'],
             [['code'], 'string', 'max' => 55],
         ];
     }
@@ -42,6 +42,8 @@ class PsPartner extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'code' => 'Code',
+			'status' => 'Status',
+
         ];
     }
 }

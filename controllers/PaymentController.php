@@ -3,67 +3,105 @@
 namespace komer45\partnership\controllers;
 
 use Yii;
-use komer45\partnership\models\PsPayment;
-use komer45\partnership\models\PsPartner;
-use komer45\partnership\models\PsOrderHistory;
+use komer45\partnership\models\Payment;
+use komer45\partnership\models\Partner;
+use komer45\partnership\models\OrderHistory;
 use komer45\partnership\models\SearchPayment;
+use komer45\partnership\models\SearchOrderHistory;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
+use yii\data\Sort;
 
 /**
- * PaymentController implements the CRUD actions for PsPayment model.
+ * PaymentController implements the CRUD actions for Payment model.
  */
 class PaymentController extends Controller
 {
     public function behaviors()
     {
         return [
-			'access' => [
-				'class' => \yii\filters\AccessControl::className(),
-				'rules' => [				//организуем доступ для двух рахых ролей
+            	'access' => [
+				'class' => AccessControl::className(),
+				'only' => ['index'],
+				'rules' => [
                     [
                         'allow' => true,	//true - Указанная роль имеет доступ к указанной странице; false - Указанная роль не имеет доступ к указанной странице.
-                        'actions' => ['index', 'create'],
-						'roles' => ['@'],	//РОЛИ(-Ъ), которые имеют доступ к странице
+                        'roles' => ['@'],	//РОЛИ(-Ъ), которые имеют доступ к странице
                     ],
-					[
-                        'allow' => true,	//true - Указанная роль имеет доступ к указанной странице; false - Указанная роль не имеет доступ к указанной странице.
-                        'actions' => ['admin', 'create'],
-						'roles' => ['administrator'],	//РОЛИ(-Ъ), которые имеют доступ к странице
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
                 ],
             ],
         ];
     }
 
     /**
-     * Lists all PsPayment models.
+     * Lists all Payment models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchPayment();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$partnerModel = $this->findPartner(Yii::$app->user->id);
+		
+        $paymentSearchModel = new SearchPayment();
+        $paymentDataProvider = $paymentSearchModel->search(Yii::$app->request->queryParams);
+		$paymentDataProvider->query->andWhere(['partner_id' => $partnerModel->id]);
+		//echo '<pre>';
+		
+        $orderHistorySearchModel = new SearchOrderHistory();
+        $orderHistoryDataProvider = $orderHistorySearchModel->search(Yii::$app->request->queryParams);
+		$orderHistoryDataProvider->query->andWhere(['partner_id' => $partnerModel->id]);
+		
+		$partnerRecoils = OrderHistory::find()->where(['partner_id' => $partnerModel->id, 'status' => 'new'])->sum('recoil');
+		if(!$partnerRecoils){
+			$partnerRecoils = 0;
+		}
+		
+		if($dateStart = yii::$app->request->get('date_start')) {
+            $orderHistoryDataProvider->query->andWhere(['>=', 'date', date('Y-m-d', strtotime($dateStart))]);
+
+        }
+
+        if($dateStop = yii::$app->request->get('date_stop')) {
+            $orderHistoryDataProvider->query->andWhere(['<=', 'date', date('Y-m-d H:i:s', strtotime($dateStop) + 86399)]);
+		}
+		
+		
+		/*if($dateStart = yii::$app->request->get('date_start')) {
+            $paymentDataProvider->query->andWhere(['>=', 'date', date('Y-m-d', strtotime($dateStart))]);
+
+        }
+
+        if($dateStop = yii::$app->request->get('date_stop')) {
+            $paymentDataProvider->query->andWhere(['<=', 'date', date('Y-m-d H:i:s', strtotime($dateStop) + 86399)]);
+		}*/
+		
+
+		/**/
+		$sort = new Sort([
+			'attributes' => [
+				'status' => [
+					'default' => SORT_DESC,
+					'label' => 'Статус',
+				],
+			],	
+		]);
+		/**/
+		
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'paymentSearchModel' => $paymentSearchModel,
+            'paymentDataProvider' => $paymentDataProvider,
+			'orderHistorySearchModel' => $orderHistorySearchModel,
+            'orderHistoryDataProvider' => $orderHistoryDataProvider,
+			'partnerModel' => $partnerModel,
+			'partnerRecoils' => $partnerRecoils,
+			'sort' => $sort,
         ]);
     }
-
-	public function actionAdmin()
-	 {
-		return $this->render('admin');
-	 }
 	
     /**
-     * Displays a single PsPayment model.
+     * Displays a single Payment model.
      * @param integer $id
      * @return mixed
      */
@@ -75,54 +113,33 @@ class PaymentController extends Controller
     }
 
     /**
-     * Creates a new PsPayment model.
+     * Creates a new Payment model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+	 
+
+	public function actionPaymentRequest($recoils)		//для партнера - заявка на выплату
     {
-		//echo 'Hello';
-		$recoils = Yii::$app->session['recoils'];
-		//if ($recoils>=Yii::$app->params['min'])
-		//{
-			//echo Yii::$app->session['use'];
-			
-			
-			if (Yii::$app->session['use'] == 2)
-			{
-				$hello = PsOrderHistory::find()->where(['partner_id' => Yii::$app->session['par'], 'status' => '+1'])->all();
-				$payment = PsPayment::find()->where(['id' => Yii::$app->session['pay']])->one();
-				foreach ($hello as $privet)
-				{
-					$privet->status = 1;
-					$privet->update();
-				}
-				$payment->status = 1;
-				$payment->update();
-				return $this->redirect('/partnership/payment/admin');
-			}
-			elseif (Yii::$app->session['use'] == 1) 
-			{
-				$hello = PsOrderHistory::find()->where(['partner_id' => Yii::$app->session['par'], 'status' => 0])->all();
-				foreach ($hello as $privet)
-				{
-					$privet->status = '+1';
-					$privet->update();
-				}
-				
-				$pay= NEW PsPayment;
-				$pay->sum = $recoils;
-				$pay->partner_id = PsPartner::find()->where(['partner_id' => Yii::$app->user->id])->one()->id;
-				$pay->date = date('Y-m-d');
-				$pay->status = 0;
-				$pay->save();
-				return $this->redirect('/partnership/payment/index?payment=payed');
-			}
-		//}
-    }
+		$partnerId = Partner::find()->where(['user_id' => Yii::$app->user->id])->one()->id;
+		$hello = OrderHistory::find()->where(['partner_id' => $partnerId, 'status' => 'new'])->all();
+		
+		foreach ($hello as $privet)
+		{
+			$privet->status = 'process';
+			$privet->update();
+		}
+		
+		$pay= NEW Payment;
+		$pay->sum = $recoils;
+		$pay->partner_id = $partnerId;
+		$pay->date = date('Y-m-d');
+		$pay->save();
+		return $this->redirect(Yii::$app->request->referrer);
+	}
 
     /**
-     * Updates an existing PsPayment model.
+     * Updates an existing Payment model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -141,7 +158,7 @@ class PaymentController extends Controller
     }
 
     /**
-     * Deletes an existing PsPayment model.
+     * Deletes an existing Payment model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -154,15 +171,24 @@ class PaymentController extends Controller
     }
 
     /**
-     * Finds the PsPayment model based on its primary key value.
+     * Finds the Payment model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return PsPayment the loaded model
+     * @return Payment the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = PsPayment::findOne($id)) !== null) {
+        if (($model = Payment::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+	
+	protected function findPartner($id)
+    {
+        if (($model = Partner::find()->where(['user_id' => $id])->one()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

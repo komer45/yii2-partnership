@@ -22,20 +22,16 @@ class m161116_091812_create_table_ps_follow extends Migration
                'tmp_user_id'=> $this->string(55)->null()->defaultValue(null),
                'url_to'=> $this->string(55)->notNull(),
                'url_from'=> $this->string(55)->null()->defaultValue(null),
-               'partner_id'=> $this->integer(11)->notNull(),
+               'partner'=> $this->integer(11)->notNull(),
                'date'=> $this->date()->notNull(),
             ], $tableOptions);
     }
 
     public function safeDown()
     {
-        $transaction=$this->db->beginTransaction();
-        try{
+
             $this->dropTable('{{%ps_follow}}');
             $transaction->commit();
-        } catch (Exception $e) {
-            echo 'Catch Exception '.$e->getMessage().' and rollBack this';
-            $transaction->rollBack();
-        }
+
     }
 }

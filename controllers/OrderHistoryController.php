@@ -3,14 +3,14 @@
 namespace komer45\partnership\controllers;
 
 use Yii;
-use komer45\partnership\models\PsOrderHistory;
+use komer45\partnership\models\OrderHistory;
 use komer45\partnership\models\SearchOrderHistory;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * OrderHistoryController implements the CRUD actions for PsOrderHistory model.
+ * OrderHistoryController implements the CRUD actions for OrderHistory model.
  */
 class OrderHistoryController extends Controller
 {
@@ -37,7 +37,7 @@ class OrderHistoryController extends Controller
     }
 
     /**
-     * Lists all PsOrderHistory models.
+     * Lists all OrderHistory models.
      * @return mixed
      */
     public function actionIndex()
@@ -52,7 +52,7 @@ class OrderHistoryController extends Controller
     }
 
     /**
-     * Displays a single PsOrderHistory model.
+     * Displays a single OrderHistory model.
      * @param integer $id
      * @return mixed
      */
@@ -64,13 +64,13 @@ class OrderHistoryController extends Controller
     }
 
     /**
-     * Creates a new PsOrderHistory model.
+     * Creates a new OrderHistory model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new PsOrderHistory();
+        $model = new OrderHistory();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -82,7 +82,7 @@ class OrderHistoryController extends Controller
     }
 
     /**
-     * Updates an existing PsOrderHistory model.
+     * Updates an existing OrderHistory model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -101,7 +101,7 @@ class OrderHistoryController extends Controller
     }
 
     /**
-     * Deletes an existing PsOrderHistory model.
+     * Deletes an existing OrderHistory model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -114,15 +114,15 @@ class OrderHistoryController extends Controller
     }
 
     /**
-     * Finds the PsOrderHistory model based on its primary key value.
+     * Finds the OrderHistory model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return PsOrderHistory the loaded model
+     * @return OrderHistory the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = PsOrderHistory::findOne($id)) !== null) {
+        if (($model = OrderHistory::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

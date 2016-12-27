@@ -5,7 +5,7 @@ namespace komer45\partnership\models;
 use Yii;
 
 /**
- * This is the model class for table "ps_follow".
+ * This is the model class for table "_follow".
  *
  * @property integer $id
  * @property string $ip
@@ -16,7 +16,7 @@ use Yii;
  * @property integer $partner_id
  * @property string $date
  */
-class PsFollow extends \yii\db\ActiveRecord
+class Follow extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -32,10 +32,10 @@ class PsFollow extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ip', 'url_to',  'partner_id', 'date'], 'required'],
-            [['user_id', 'partner_id'], 'integer'],
+            [['ip', 'url_to',  'partner', 'date'], 'required'],
+            [['user_id', 'partner', 'status'], 'integer'],
             [['date'], 'safe'],
-            [['ip', 'tmp_user_id', 'url_to', 'url_from'], 'string', 'max' => 55],
+			[['ip', 'tmp_user_id', 'url_to', 'url_from'], 'string', 'max' => 55],
         ];
     }
 
@@ -51,8 +51,9 @@ class PsFollow extends \yii\db\ActiveRecord
             'tmp_user_id' => 'Tmp User ID',
             'url_to' => 'Url To',
             'url_from' => 'Url From',
-            'partner_id' => 'Partner ID',
+            'partner' => 'Partner ID',
             'date' => 'Date',
+			'status' => 'status',
         ];
     }
 }

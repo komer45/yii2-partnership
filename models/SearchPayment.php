@@ -5,12 +5,12 @@ namespace komer45\partnership\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use komer45\partnership\models\PsPayment;
+use komer45\partnership\models\Payment;
 
 /**
- * SearchPayment represents the model behind the search form about `common\modules\komer45\partnership\models\PsPayment`.
+ * SearchPayment represents the model behind the search form about `common\modules\komer45\partnership\models\Payment`.
  */
-class SearchPayment extends PsPayment
+class SearchPayment extends Payment
 {
     /**
      * @inheritdoc
@@ -20,7 +20,7 @@ class SearchPayment extends PsPayment
         return [
             [['id', 'partner_id'], 'integer'],
             [['sum'], 'number'],
-			[['date'], 'safe'],
+			[['date', 'status'], 'safe'],
         ];
     }
 
@@ -42,7 +42,7 @@ class SearchPayment extends PsPayment
      */
     public function search($params)
     {
-        $query = PsPayment::find();
+		$query = Payment::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,8 +57,9 @@ class SearchPayment extends PsPayment
             'sum' => $this->sum,
 			'date' => $this->date,
             'partner_id' => $this->partner_id,
+			'status' => $this->status
         ]);
-
+		
         return $dataProvider;
     }
 }

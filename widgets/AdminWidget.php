@@ -16,12 +16,6 @@ class AdminWidget extends \yii\base\Widget
 	
 	public function run()
     {
-	?>
-		<form action='/partnership/payment/admin'>
-			<div class="form-group">
-				<?=Html::submitButton('Admin', ['class' => 'btn btn-primary', 'data-href' => Url::toRoute(['/partnership/payment/admin'])]);?>
-			</div>
-		</form>
-	<?
+		echo Html::a('Администрирование', Url::to(['/partnership/partner/admin']));
 	}
 }

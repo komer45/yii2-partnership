@@ -6,8 +6,4 @@ use komer45\partnership\models\Merch;
 use pistol88\order\widgets\OrderForm;
 use komer45\partnership\controllers\ProductController;
 ?>
-
-<h3>Форма заказа:</h3>
-<div id="orderForm">
-	<? echo OrderForm::widget(); ?>
-</div>
+Congratulations!

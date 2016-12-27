@@ -1,20 +1,20 @@
-﻿<?php
+<?php
 
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-use yii\helpers\ArrayHelper;
-use kartik\select2\Select2;
 use nex\datepicker\DatePicker;
+use kartik\select2\Select2;
+use yii\bootstrap\ActiveForm;
+use yii\web\JsExpression;
+use yii\bootstrap\Modal;
+use yii\helpers\ArrayHelper;
+use yii\data\Sort;
 
 use kartik\grid\GridView;
 
-
-
 /* @var $this yii\web\View */
 /* @var $model komer45\partnership\models\Setting */
-
-//var_dump($model); $model - модель партнера (объект)
 
 if($dateStart = yii::$app->request->get('date_start')) {
     $dateStart = date('d.m.Y', strtotime($dateStart));
@@ -24,46 +24,22 @@ if($dateStop = yii::$app->request->get('date_stop')) {
     $dateStop = date('d.m.Y', strtotime($dateStop));
 }
 
-
-$this->title = 'Мои вознаграждения';
+$this->title = 'Партнер: '.$model->code;
+$this->params['breadcrumbs'][] = ['label' => 'Партнеры', 'url' => ['/partnership/partner/admin']];
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 
-<div class="setting-view">
-
-
-
-
-<ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#profit">Начисления</a></li>
-  <li><a data-toggle="tab" href="#payment">Выплаты</a></li>
-</ul>
-
-<div class="tab-content">
-
-    <div id="profit" class="tab-pane fade in active">
-		<?php echo  Html::tag('h3', Html::encode('Общая сумма моих отчислений: '.$partnerRecoils));
-		//echo '<h3>Общая сумма моих отчислений: '.$partnerRecoils.' ';	
-			if ($partnerRecoils >= 500){		//ГЛОБАЛЬНАЯ ПЕРЕМЕННАЯ
-				echo Html::a('Выплатить', url::to(['/partnership/payment/payment-request', 'recoils' => $partnerRecoils]), ['class' => 'btn btn-default']);	
-				//echo "<input type='range' min='1' max=$partnerRecoils>";
-			}
-			//echo ' </h3>';
-			//echo Html::a('Очистить все фильты', url::to(['/partnership/payment/']), ['class' => 'btn btn-default']);
-		?>
-		
-		
-	<div class="panel panel-primary">
+<div class="panel panel-primary">
         <div class="panel-heading">
-            <h3 class="panel-title"><?=yii::t('payment', 'Search');?></h3>
+            <h3 class="panel-title"><?=yii::t('order', 'Search');?></h3>
         </div>
         <div class="panel-body">
             <form action="" class="row search">
+				<input type="hidden" name="id" value="<?=$model->id?>" />
                 <input type="hidden" name="OperationSearch[name]" value="" />
 
                 <div class="col-md-4">
@@ -112,98 +88,111 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <div class="col-md-2">
-                    <input class="form-control btn-success" type="submit" value="<?=Yii::t('payment', 'Search');?>" />
+                    <input class="form-control btn-success" type="submit" value="<?=Yii::t('order', 'Search');?>" />
                 </div>
                 <div class="col-md-3">
-                    <a class="btn btn-default" href="<?= Url::to(["/partnership/payment"]) ?>" />Cбросить все фильтры</a>
+                    <a class="btn btn-default" href="<?= Url::to(["/partnership/partner/view?id=$model->id"]) ?>" />Cбросить все фильтры</a>
                 </div>
             </form>
         </div>
     </div>  
-		
-		
-	    <?php echo GridView::widget([
-			'dataProvider' => $orderHistoryDataProvider,
-			'filterModel' => $orderHistorySearchModel,
-			'columns' => [
-				['class' => 'yii\grid\SerialColumn'],
-				
-				'date',
-				'sum',
-				'recoil',
-				[
-					'format' => 'raw',
-					'header' => $sort->link('status'),
-					'value' => function($model) {
-						if ($model->status == 'new'){
-							return 'Новый';
-						}elseif ($model->status == 'process'){
-							return 'В обработке';
-						}elseif ($model->status == 'payed'){
-							return 'Выплачен';
-						}
-					},
-					'filter' =>  Select2::widget([
-						'name' => 'SearchOrderHistory[status]',
-						//'value' => 'red', // initial value
-						//'model' => $userList,
-						'data'  => ['new' => 'Новый', 'process' => 'В процессе', 'payed' => 'Выплачено'],
-						'options' => ['placeholder' => 'Choose a user ...'],
-						'pluginOptions' => [
-							'tags' => true,
-							'tokenSeparators' => [',', ' '],
-							'maximumInputLength' => 10
-						],
-					])
-					
-					
-					
-				],
-			],
-		]); ?>  
-	</div>
+  
+ <?php
+
+/*var_dump($model2);
+die;*/
+?> 
+  
+  
+<div class="setting-view">
 
 
-	<div id="payment" class="tab-pane fade">
+
+
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#payment">Выплаты</a></li>
+  <li><a data-toggle="tab" href="#profit">Начисления</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="payment" class="tab-pane fade in active">
 
 	    <?php echo GridView::widget([
-			'dataProvider' => $paymentDataProvider,
-			'filterModel' => $paymentSearchModel,
-			'columns' => [
-				['class' => 'yii\grid\SerialColumn'],
-				
-				'date',
-				'sum',
-				[
-					'format' => 'raw',
-					'value' => function($model) {
-						if($model->status == 0){
-							return 'В ожидании';
-						}else {
-							return 'Выплачено';
-						}
-					},
-					'filter' =>  Select2::widget([
-						'name' => 'SearchPayment[status]',
-						//'value' => 'red', // initial value
-						//'model' => $userList,
-						'data'  => ['0' => 'В ожидании', '1' => 'В процессе'],
-						'options' => ['placeholder' => 'Choose a user ...'],
-						'pluginOptions' => [
-							'tags' => true,
-							'tokenSeparators' => [',', ' '],
-							'maximumInputLength' => 10
-						],
-					])
-				],
-				
-				
-			],
-		]); ?>  
+        'dataProvider' => $paymentDataProvider,
+        'filterModel' => $paymentSearchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+			
+			'date',
+			'sum',
+			[
+			    'format' => 'raw',
+				'value' => function($model) {
+					if($model->status == 0){
+						return Html::a('Выплатить', Url::to(['/partnership/partner/make-payment', 'paymentId' => $model->id]));
+					}else {
+						return 'Выплачено';
+					}
+				}
+			]
+			
+		],
+    ]); ?>  
 	  
-	</div>
- 
+  </div>
+  <div id="profit" class="tab-pane fade">
+    
+	    <?php 
+		echo GridView::widget([
+        'dataProvider' => $profitDataProvider,
+        'filterModel' => $profitSearchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+			
+			[
+			    'format' => 'raw',
+				'label' => 'Заказ', 
+				'value' => function($model) {
+					return Html::a("№ $model->order_id", Url::to(['/partnership/partner/order-view', 'orderId' => $model->order_id]));
+				}
+			],
+			'date',
+			'recoil',
+			[
+			    'format' => 'raw',
+				'header' => $sort->link('user_id'),
+				'value' => function($model) {
+					return $model->user->name;
+				},
+				//'filter' => Html::input('user', 'SearchOrderHistory[username]'),
+				
+				
+				
+				'filter' =>  Select2::widget([
+					'name' => 'SearchOrderHistory[user_id]',
+					//'value' => 'red', // initial value
+					//'model' => $userList,
+					'data'  => ArrayHelper::map($users, 'id', 'name'),
+					'options' => ['placeholder' => 'Choose a user ...'],
+					'pluginOptions' => [
+						'tags' => true,
+						'tokenSeparators' => [',', ' '],
+						'maximumInputLength' => 10
+					],
+				])
+				
+				
+				
+			],
+		],
+    ]); 
+	
+	?>
+	
+  </div>
+
 </div>
+
 
 
 

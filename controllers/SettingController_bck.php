@@ -3,30 +3,30 @@
 namespace komer45\partnership\controllers;
 
 use Yii;
-use komer45\partnership\models\Merch;
-use komer45\partnership\models\SearchMerch;
+use komer45\partnership\models\Setting;
+use komer45\partnership\models\SearchSetting;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * MerchController implements the CRUD actions for Merch model.
+ * SettingController implements the CRUD actions for Setting model.
  */
-class MerchController extends Controller
+class SettingController extends Controller
 {
     public function behaviors()
     {
         return [
-			/*'access' => [
+		'access' => [
 				'class' => \yii\filters\AccessControl::className(),
 				'only' => ['index'],
 				'rules' => [
                     [
-                        'allow' => true,	//право доступа
+                        'allow' => true,	//true - Указанная роль имеет доступ к указанной странице; false - Указанная роль не имеет доступ к указанной странице.
                         'roles' => ['@'],	//РОЛИ(-Ъ), которые имеют доступ к странице
                     ],
                 ],
-            ],*/
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -37,34 +37,39 @@ class MerchController extends Controller
     }
 
     /**
-     * Lists all Merch models.
+     * Lists all Setting models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchMerch();
+        $searchModel = new SearchSetting();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-		$merch = Merch::find()->all();
-		
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-			'merch' => $merch,
         ]);
     }
 
-	public function actionOrder()
-    {
-        return $this->render('order');
-    }
+	public function actionAdmin()
+	{
+		$model = Setting::find()->all();
+		return $this->render('admin', [
+			'model' => $model,
+		]);
+	}
 	
-	public function actionThnks()
-    {
-        return $this->render('thnks');
-    }
+	public function actionSettings($settingId,$sum)
+	{
+		
+		$postData = (Yii::$app->request->post());
+		die();
+		
+		return $this->redirect('admin');
+	}	
 	
     /**
-     * Displays a single Merch model.
+     * Displays a single Setting model.
      * @param integer $id
      * @return mixed
      */
@@ -76,25 +81,13 @@ class MerchController extends Controller
     }
 
     /**
-     * Creates a new Merch model.
+     * Creates a new Setting model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new Merch();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
 
     /**
-     * Updates an existing Merch model.
+     * Updates an existing Setting model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -113,7 +106,7 @@ class MerchController extends Controller
     }
 
     /**
-     * Deletes an existing Merch model.
+     * Deletes an existing Setting model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -121,35 +114,22 @@ class MerchController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Merch model based on its primary key value.
+     * Finds the Setting model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Merch the loaded model
+     * @return Setting the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Merch::findOne($id)) !== null) {
+        if (($model = Setting::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-	
-	
-	/*
-	Добавление товара в корзину, pistol88
-	*/
-	public function actionAddToCart($id)
-    {
-        //Любая модель
-        $model = $this->findModel($id);
-        //Кладем ее в корзину (в количестве 1, без опций)
-        $cartElement = yii::$app->cart->put($model, 1, []);
     }
 }

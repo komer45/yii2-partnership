@@ -3,14 +3,27 @@
 namespace komer45\partnership\controllers;
 
 use Yii;
-use komer45\partnership\models\PsPartner;
+use yii\data\Sort;
+use common\models\User;
+use komer45\partnership\models\Partner;
 use komer45\partnership\models\SearchPartner;
+use komer45\partnership\models\Payment;
+use komer45\partnership\models\SearchPayment;
+use komer45\partnership\models\OrderHistory;
+use komer45\partnership\models\SearchOrderHistory;
+use komer45\partnership\models\Follow;
+use komer45\partnership\models\SearchFollow;
+use pistol88\order\models\Order;
+use pistol88\order\models\tools\OrderSearch;
+use pistol88\order\models\Element;
+use pistol88\order\models\tools\ElementSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
- * PartnerController implements the CRUD actions for PsPartner model.
+ * PartnerController implements the CRUD actions for Partner model.
  */
 class PartnerController extends Controller
 {
@@ -19,11 +32,11 @@ class PartnerController extends Controller
         return [
 		'access' => [
 				'class' => \yii\filters\AccessControl::className(),
-				'only' => ['index', 'view'],
+				'only' => ['admin'],
 				'rules' => [
                     [
                         'allow' => true,	//true - Указанная роль имеет доступ к указанной странице; false - Указанная роль не имеет доступ к указанной странице.
-                        'roles' => ['admin'],	//РОЛИ(-Ъ), которые имеют доступ к странице
+                        'roles' => ['administrator'],	//РОЛИ(-Ъ), которые имеют доступ к странице
                     ],
                 ],
             ],
@@ -37,40 +50,124 @@ class PartnerController extends Controller
     }
 
     /**
-     * Lists all PsPartner models.
+     * Lists all Partner models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchPartner();
+		$searchPartner = new SearchPartner();
+        $partnerCode = $searchPartner->search(Yii::$app->request->queryParams);
+		$partnerCode->query->andWhere(['user_id' => Yii::$app->user->id]);
+		
+		$partnerCode = Partner::find()->where(['user_id' => Yii::$app->user->id])->one();
+		
+        $searchModel = new SearchFollow();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$dataProvider->query->andWhere(['partner' => $partnerCode]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProvider' => $dataProvider
         ]);
     }
 
+	
+	
+	public function actionAdmin()		//для админа - управление активностью партнеров
+    {
+        $searchModel = new SearchPartner();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('admin', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider
+        ]);
+    }
+	
+	
+	
+	public function actionActivate($statusTo, $partner)	//для админа - активировать/деактивироваиь переход
+    {
+		$model = Partner::find()->where(['id' => $partner])->one();
+		if ($statusTo == 0){
+			$model->status = 0;
+		}elseif ($statusTo == 1){
+			$model->status = 1;
+		}
+		$model->update();
+		return $this->redirect('admin');
+	}
+		
     /**
-     * Displays a single PsPartner model.
+     * Displays a single Partner model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
+		$paymentSearchModel = new SearchPayment();
+        $paymentDataProvider = $paymentSearchModel->search(Yii::$app->request->queryParams);
+		$paymentDataProvider->query->andWhere(['partner_id' => $id]);
+		$paymentDataProvider->sort->defaultOrder = ['id' => SORT_DESC];
+		
+		if($dateStart = yii::$app->request->get('date_start')) {
+            $paymentDataProvider->query->andWhere(['>=', 'date', date('Y-m-d', strtotime($dateStart))]);
+
+        }
+
+        if($dateStop = yii::$app->request->get('date_stop')) {
+            $paymentDataProvider->query->andWhere(['<=', 'date', date('Y-m-d H:i:s', strtotime($dateStop) + 86399)]);
+		}
+		
+		$orderHistorySearchModel = new SearchOrderHistory();
+        $orderHistoryDataProvider = $orderHistorySearchModel->search(Yii::$app->request->queryParams);
+		$orderHistoryDataProvider->query->andWhere(['partner_id' => $id]);
+		$orderHistoryDataProvider->sort->defaultOrder = ['id' => SORT_DESC];
+		
+		$referals = OrderHistory::find()->where(['partner_id' => $id])->asArray()->all();
+		//$referals = array_unique($referals);
+		//var_dump(count($referals));
+		
+		$referalsIds = ArrayHelper::getColumn($referals, 'user_id');
+		$referalsIds = array_unique($referalsIds);
+		$users = User::find()->where(['id' => $referalsIds])->all();
+
+		/**/
+		$sort = new Sort([
+			'attributes' => [
+				'user_id' => [
+					'default' => SORT_DESC,
+					'label' => 'Реферал',
+				],
+			],	
+		]);
+		/**/
+
+		
+		/*echo '<pre>';
+		var_dump(Partner::find()->where(['id' => $id])->all());
+		die;*/
+		
         return $this->render('view', [
+			'paymentDataProvider' => $paymentDataProvider,
+			'profitDataProvider' => $orderHistoryDataProvider,
+			'paymentSearchModel' => $paymentSearchModel,
+			'profitSearchModel' => $orderHistorySearchModel,
             'model' => $this->findModel($id),
+			'model2' => OrderHistory::find()->where(['partner_id' => $id])->all(),
+			'users' => $users,
+			'sort' => $sort
         ]);
     }
 
     /**
-     * Creates a new PsPartner model.
+     * Creates a new Partner model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new PsPartner();
+        $model = new Partner();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -82,7 +179,7 @@ class PartnerController extends Controller
     }
 
     /**
-     * Updates an existing PsPartner model.
+     * Updates an existing Partner model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -101,7 +198,7 @@ class PartnerController extends Controller
     }
 
     /**
-     * Deletes an existing PsPartner model.
+     * Deletes an existing Partner model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -112,20 +209,79 @@ class PartnerController extends Controller
 
         return $this->redirect(['index']);
     }
+	
+	public function actionMakePayment($paymentId)					//по нажатию на кнопку "Выплатить |партнеру|"
+	{
+		$pay = Yii::$app->Partnership->makePayment($paymentId);		//отправляем в функцию makePayment($paymentId) в модуль Partnership.php
+		return $this->redirect(Yii::$app->request->referrer);
+		if ($pay){													//если выполнено успешно
+			//return $this->redirect(Yii::$app->request->referrer);
+		} else{
+			//die('Error');
+		}
+	}
 
     /**
-     * Finds the PsPartner model based on its primary key value.
+     * Finds the Partner model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return PsPartner the loaded model
+     * @return Partner the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = PsPartner::findOne($id)) !== null) {
+        if (($model = Partner::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+	
+	public function actionBecomePartner($userId)
+	{
+		// id  	user_id 	code 	status
+
+		$model = Partner::find()->where(['user_id' => $userId])->one();
+		if (!$model){
+			$partner = new Partner();
+			
+			$partner->user_id = $userId;
+			$code1 = (string)Yii::$app->user->identity->username;
+			$code2 = (string)Yii::$app->user->id;
+			$code = $code1.$code2;
+			$partner->code = $code;
+
+			if ($partner->validate())
+			{
+				$partner -> save();
+			}
+		}
+		return $this->redirect(Yii::$app->request->referrer);
+	}
+	
+	public function actionOrderView($orderId)
+	{
+		$order = Order::findOne($orderId);
+		$orderElement = Element::find()->where(['order_id' => $orderId])->one();
+		$partnerId = Partner::find()->where(['user_id' => Yii::$app->user->id])->one()->id;
+		//$element = Element::find()->where(['order_id' => $orderId])->one();
+		
+		/*$searchOrder = new OrderSearch();
+        $orderDateProvider = $searchOrder->search(Yii::$app->request->queryParams);
+		$orderDateProvider->query->andWhere(['id' => $orderId]);*/
+		//$model = Element::find()->where(['order_id'=>$orderId])->joinWith('elementsRelation')->one();
+		//$model = $this->getOrder($orderId);
+		return $this->render('order', [
+				'order' => $order,
+				'orderElement' => $orderElement,
+				'partnerId' => $partnerId
+            ]);
+	}
+	
+	public function getOrder($orderId)
+    {
+		$element = Order::find()->where(['order_id' => $orderId])->one();
+        return $element->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+	
 }

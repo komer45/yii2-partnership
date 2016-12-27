@@ -18,7 +18,7 @@ class m161116_092112_create_table_ps_partner extends Migration
 
              $this->createTable('{{%ps_partner}}',[
                'id'=> $this->primaryKey(11),
-               'partner_id'=> $this->integer(11)->notNull(),
+               'user_id'=> $this->integer(11)->notNull(),
                'code'=> $this->string(55)->notNull(),
             ], $tableOptions);
             $this->createIndex('id','{{%ps_partner}}','id',false);

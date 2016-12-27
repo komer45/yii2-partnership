@@ -5,12 +5,12 @@ namespace komer45\partnership\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use komer45\partnership\models\PsSetting;
+use komer45\partnership\models\Setting;
 
 /**
- * SearchSetting represents the model behind the search form about `komer45\partnership\models\PsSetting`.
+ * SearchSetting represents the model behind the search form about `komer45\partnership\models\Setting`.
  */
-class SearchSetting extends PsSetting
+class SearchSetting extends Setting
 {
     /**
      * @inheritdoc
@@ -40,7 +40,7 @@ class SearchSetting extends PsSetting
      */
     public function search($params)
     {
-        $query = PsSetting::find();
+        $query = Setting::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
