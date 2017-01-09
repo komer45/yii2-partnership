@@ -44,7 +44,8 @@ php yii migrate --migrationPath=vendor/komer45/yii2-partnership/migrations
 	'modules' => [
 		'partnership' => [
 			'class' => 'komer45\partnership\Module',
-			'layout' => 'main'
+			'layout' => 'main',
+			'adminRoles' => ['superadmin', 'administrator'],
 		],
 		//...
 	]
@@ -128,3 +129,17 @@ use komer45\partnership\widgets\AdminWidget;
 <?=PaymentWidget::widget();?>	//Виджет выплат (партнер - оставить заявку на выплату)
 <?=AdminWidget::widget();?>		//Виджет выплат (администратор - выплаты по заявкам)
 ```
+
+Если необходимо связать данный модуль с модулем кошелька (komer45/yii2-balance), можно сделать подписку на событие. В конфиге модифицируем подключение partnership в разделе modules:
+```php
+ 'partnership' => [
+	...
+				'on makePayment' => function($event){
+					$model = $event->model;
+					$userId = Yii::$app->Partnership->getUserByPartnerId($model->partner_id);
+					$balance = Yii::$app->balance->getUserBalance($userId);
+					Yii::$app->balance->addTransaction($balance->id, 'in', $model->sum, 'partnership rewads');
+				}
+  ],
+
+``` 
