@@ -59,15 +59,42 @@ class PartnerController extends Controller
         $partnerCode = $searchPartner->search(Yii::$app->request->queryParams);
 		$partnerCode->query->andWhere(['user_id' => Yii::$app->user->id]);
 		
-		$partnerCode = Partner::find()->where(['user_id' => Yii::$app->user->id])->one();
+		$partnerCode = Partner::find()->where(['user_id' => Yii::$app->user->id])->one()->code;
 		
         $searchModel = new SearchFollow();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 		$dataProvider->query->andWhere(['partner' => $partnerCode]);
 
+		$sortStatus = new Sort([
+			'attributes' => [
+				'status' => [
+					'default' => SORT_DESC,
+					'label' => 'Статус',
+				],
+			],	
+		]);
+		
+		$partnerId = Partner::find()->where(['user_id' => Yii::$app->user->id])->one()->code;
+		$referals = Follow::find()->where(['partner' => $partnerId])->asArray()->all();
+		$referalsIds = ArrayHelper::getColumn($referals, 'user_id');
+		$referalsIds = array_unique($referalsIds);
+		$users = User::find()->where(['id' => $referalsIds])->all();
+		
+		$sortReferal = new Sort([
+			'attributes' => [
+				'user_id' => [
+					'default' => SORT_DESC,
+					'label' => 'Реферал',
+				],
+			],	
+		]);
+		
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider
+            'dataProvider' => $dataProvider,
+			'sortStatus' => $sortStatus,
+			'users' => $users,
+			'sortReferal' => $sortReferal
         ]);
     }
 
@@ -77,10 +104,36 @@ class PartnerController extends Controller
     {
         $searchModel = new SearchPartner();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		
+		$sortStatus = new Sort([
+			'attributes' => [
+				'status' => [
+					'default' => SORT_DESC,
+					'label' => 'Статус',
+				],
+			],	
+		]);
+		
+		$sortUser = new Sort([
+			'attributes' => [
+				'user_id' => [
+					'default' => SORT_DESC,
+					'label' => 'Пользователь',
+				],
+			],	
+		]);
 
+		$partnerId = Partner::find()->all();
+		$referalsIds = ArrayHelper::getColumn($partnerId, 'user_id');
+		$referalsIds = array_unique($referalsIds);
+		$users = User::find()->where(['id' => $referalsIds])->all();
+		
         return $this->render('admin', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider
+            'dataProvider' => $dataProvider,
+			'sortStatus' => $sortStatus,
+			'users' => $users,
+			'sortUser' => $sortUser,
         ]);
     }
 	
@@ -131,7 +184,7 @@ class PartnerController extends Controller
 		$referalsIds = ArrayHelper::getColumn($referals, 'user_id');
 		$referalsIds = array_unique($referalsIds);
 		$users = User::find()->where(['id' => $referalsIds])->all();
-
+		$orders = OrderHistory::find()->all();
 		/**/
 		$sort = new Sort([
 			'attributes' => [
@@ -143,6 +196,24 @@ class PartnerController extends Controller
 		]);
 		/**/
 
+		$sortStatus = new Sort([
+			'attributes' => [
+				'status' => [
+					'default' => SORT_DESC,
+					'label' => 'Статус',
+				],
+			],	
+		]);
+		
+				
+		$sortOrder = new Sort([
+			'attributes' => [
+				'order_id' => [
+					'default' => SORT_DESC,
+					'label' => 'Id заказа',
+				],
+			],	
+		]);
 		
 		/*echo '<pre>';
 		var_dump(Partner::find()->where(['id' => $id])->all());
@@ -156,7 +227,10 @@ class PartnerController extends Controller
             'model' => $this->findModel($id),
 			'model2' => OrderHistory::find()->where(['partner_id' => $id])->all(),
 			'users' => $users,
-			'sort' => $sort
+			'sort' => $sort,
+			'sortStatus' => $sortStatus,
+			'sortOrder' => $sortOrder,
+			'orders' => $orders
         ]);
     }
 

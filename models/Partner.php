@@ -39,10 +39,10 @@ class Partner extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'user_id' => 'User ID',
-            'code' => 'Code',
-			'status' => 'Status',
+            'id' => 'ID партнера',
+            'user_id' => 'Id юзера',
+            'code' => 'Код',
+			'status' => 'Статус',
 
         ];
     }

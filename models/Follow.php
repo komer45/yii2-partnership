@@ -45,15 +45,15 @@ class Follow extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'ip' => 'Ip',
-            'user_id' => 'User ID',
-            'tmp_user_id' => 'Tmp User ID',
-            'url_to' => 'Url To',
-            'url_from' => 'Url From',
-            'partner' => 'Partner ID',
-            'date' => 'Date',
-			'status' => 'status',
+            'id' => 'Id перехода',
+            'ip' => 'Ip пользователя',
+            'user_id' => 'Id пользователя',
+            'tmp_user_id' => 'Id пользователя(незар.)',
+            'url_to' => 'Куда перешел',
+            'url_from' => 'Откуда перешел',
+            'partner' => 'Id партнера',
+            'date' => 'Дата',
+			'status' => 'Статус',
         ];
     }
 }

@@ -2,16 +2,13 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
-
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 use komer45\partnership\widgets\PartnerWidget;
 
 echo PartnerWidget::widget();
 
 $this->title = 'Партнер: '.$model->id;
-echo '<pre>';
-//die(var_dump(Yii::$app->user->identity));
-//die(var_dump($model));
-//die(var_dump($DataProvider));
 ?>
 
 	<?php echo GridView::widget([
@@ -27,23 +24,48 @@ echo '<pre>';
 
 				[
 					'format' => 'raw',
-					'label' => 'Реферал', 
+					'header' => $sortReferals->link('user_id'), 
 					'value' => function($model) {
 						$userModel = Yii::$app->user->identity;			//Для идентифицирования пользователей системы
 						$user = $userModel::findOne($model->user_id);	//находим пользователя по данному полю
 						return $user->name;								//выводим имя пользователя
-					}
+					},
+					'filter' =>  Select2::widget([
+					'name' => 'SearchFollow[user_id]',
+					//'value' => 'red', // initial value
+					//'model' => $userList,
+					'data'  => ArrayHelper::map($users, 'id', 'name'),
+					'options' => ['placeholder' => 'Choose a user ...'],
+					'pluginOptions' => [
+						'tags' => true,
+						'tokenSeparators' => [',', ' '],
+						'maximumInputLength' => 10
+					],
+				])
+
 				],
 				[
 					'format' => 'raw',
-					'label' => 'Статус', 
+					'header' => $sortStatus->link('status'), 
 					'value' => function($model) {
 						if($model->status == 1){	//!ВАЖНО: РЕФАКТОР СТАТУСОВ!
 							return 'Активно';
 						}else {
 							return 'Неактивно';
 						}
-					}
+					},
+					'filter' =>  Select2::widget([
+					'name' => 'SearchFollow[status]',
+					//'value' => 'red', // initial value
+					//'model' => $userList,
+					'data'  => [0 => 'Неактивно', 1 => 'Активно'],
+					'options' => ['placeholder' => 'Статус...'],
+					'pluginOptions' => [
+						'tags' => true,
+						'tokenSeparators' => [',', ' '],
+						'maximumInputLength' => 10
+					],
+				])
 				],
 				[
 					'format' => 'raw',

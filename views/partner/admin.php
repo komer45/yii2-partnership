@@ -2,6 +2,10 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
+use yii\data\Sort;
+
 $this->title = "Партнеры";
 ?>
 <div class="partner-admin">
@@ -15,8 +19,49 @@ $this->title = "Партнеры";
 
             'id',
 			'user_id',
+			[
+				'format' => 'raw',
+				'header' => $sortUser->link('user_id'),
+				'value' => function($model) {
+					$userModel = Yii::$app->user->identity;			//Для идентифицирования пользователей системы
+					$user = $userModel::findOne($model->user_id);	//находим пользователя по данному полю
+					return $user->name;								//выводим имя пользователя
+				},
+				'filter' =>  Select2::widget([
+					'name' => 'SearchOrderHistory[user_id]',
+					'data'  => ArrayHelper::map($users, 'id', 'name'),
+					'options' => ['placeholder' => 'Choose a user ...'],
+					'pluginOptions' => [
+						'tags' => true,
+						'tokenSeparators' => [',', ' '],
+						'maximumInputLength' => 10
+					],
+				])
+			],
 			'code',
-			'status',
+			//'status',
+			[
+			    'format' => 'raw',
+				'header' => $sortStatus->link('status'),
+				'value' => function($model) {
+					if($model->status === 0){
+						return 'Неактивен';
+					}
+					if($model->status === 1){
+						return 'Активен';
+					}
+				},
+				'filter' =>  Select2::widget([
+						'name' => 'SearchPartner[status]',
+						'data'  => [0 => 'Неактивен', 1 => 'Активен'],
+						'options' => ['placeholder' => 'Статус...'],
+						'pluginOptions' => [
+							'tags' => true,
+							'tokenSeparators' => [',', ' '],
+							'maximumInputLength' => 10
+						],
+					])
+			],
 			[
 			    'format' => 'raw',
 				'value' => function($model) {

@@ -127,13 +127,26 @@ die;*/
 			'sum',
 			[
 			    'format' => 'raw',
+				'header' => $sortStatus->link('status'),
+				
+				'filter' =>  Select2::widget([
+					'name' => 'SearchPayment[status]',
+					'data'  => [0 => 'Не выплачено', 1 => 'Выплачено'],
+					'options' => ['placeholder' => 'Статус...'],
+					'pluginOptions' => [
+						'tags' => true,
+						'tokenSeparators' => [',', ' '],
+						'maximumInputLength' => 10
+					],
+				]),
+				
 				'value' => function($model) {
 					if($model->status == 0){
 						return Html::a('Выплатить', Url::to(['/partnership/partner/make-payment', 'paymentId' => $model->id]));
 					}else {
 						return 'Выплачено';
 					}
-				}
+				},
 			]
 			
 		],
@@ -151,10 +164,22 @@ die;*/
 			
 			[
 			    'format' => 'raw',
-				'label' => 'Заказ', 
+				'header' => $sortOrder->link('order_id'), 
 				'value' => function($model) {
-					return Html::a("№ $model->order_id", Url::to(['/partnership/partner/order-view', 'orderId' => $model->order_id]));
-				}
+					return Html::a("$model->order_id", Url::to(['/partnership/partner/order-view', 'orderId' => $model->order_id]));
+				},
+				'filter' =>  Select2::widget([
+					'name' => 'SearchOrderHistory[order_id]',
+					//'value' => 'red', // initial value
+					//'model' => $userList,
+					'data'  => ArrayHelper::map($orders, 'order_id', 'order_id'),
+					'options' => ['placeholder' => 'Заказа №...'],
+					'pluginOptions' => [
+						'tags' => true,
+						'tokenSeparators' => [',', ' '],
+						'maximumInputLength' => 10
+					],
+				])
 			],
 			'date',
 			'recoil',

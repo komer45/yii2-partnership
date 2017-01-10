@@ -7,12 +7,14 @@ use komer45\partnership\models\Follow;
 use komer45\partnership\models\Partner;
 use komer45\partnership\models\SearchFollow;
 use komer45\partnership\models\SearchPartner;
-//use common\models\User;
+use common\models\User;
 //use komer45\partnership\interfaces\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\data\Sort;
+use yii\helpers\ArrayHelper;
 
 
 /**
@@ -60,7 +62,7 @@ class FollowController extends Controller
 	{
 		$partner = Partner::find()->where(['user_id' => Yii::$app->user->id])->one();
         $follows = Follow::find()->where(['partner' => $partner->code])->all();
-		$users = User::find()->all();
+		$users = User::find()->asArray()->all();
 
 		return $this->render('index',[
 			'follows' => $follows,
@@ -100,11 +102,37 @@ class FollowController extends Controller
 		$partnerDataProvider->query->andWhere(['partner' => $pCode]);
 		//$partnerDataProvider->sort->defaultOrder = ['id' => SORT_DESC];
 		
+		$sortReferals = new Sort([
+			'attributes' => [
+				'user_id' => [
+					'default' => SORT_DESC,
+					'label' => 'Пользователь',
+				],
+			],	
+		]);
+		
+		$sortStatus = new Sort([
+			'attributes' => [
+				'status' => [
+					'default' => SORT_DESC,
+					'label' => 'Статус',
+				],
+			],	
+		]);
+		
+		$partnerId = Partner::find()->where(['user_id' => Yii::$app->user->id])->one()->code;
+		$referals = Follow::find()->where(['partner' => $partnerId])->asArray()->all();
+		$referalsIds = ArrayHelper::getColumn($referals, 'user_id');
+		$referalsIds = array_unique($referalsIds);
+		$users = User::find()->where(['id' => $referalsIds])->all();
 		
         return $this->render('view', [
 			'DataProvider' => $partnerDataProvider,
 			'SearchModel' => $partnerSearchModel,
-            'model' => $this->findPartner($id)
+            'model' => $this->findPartner($id),
+			'sortReferals' => $sortReferals,
+			'sortStatus' => $sortStatus,
+			'users' => $users
         ]);
     }
 

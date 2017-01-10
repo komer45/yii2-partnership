@@ -18,7 +18,7 @@ class SearchFollow extends Follow
     public function rules()
     {
         return [
-            [['id', 'user_id', 'partner'], 'integer'],
+            [['id', 'user_id', 'partner', 'status'], 'integer'],
             [['ip', 'tmp_user_id', 'url_to', 'url_from', 'date'], 'safe'],
         ];
     }
@@ -56,6 +56,7 @@ class SearchFollow extends Follow
             'user_id' => $this->user_id,
             'partner' => $this->partner,
             'date' => $this->date,
+			'status' => $this->status,
         ]);
 
         $query->andFilterWhere(['like', 'ip', $this->ip])

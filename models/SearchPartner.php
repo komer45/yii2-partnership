@@ -18,7 +18,7 @@ class SearchPartner extends Partner
     public function rules()
     {
         return [
-            [['id', 'user_id'], 'integer'],
+            [['id', 'user_id', 'status'], 'integer'],
             [['code'], 'safe'],
         ];
     }
@@ -54,6 +54,7 @@ class SearchPartner extends Partner
         $query->andFilterWhere([
             'id' => $this->id,
             'user_id' => $this->user_id,
+			'status' => $this->status,
         ]);
 
         $query->andFilterWhere(['like', 'code', $this->code]);
