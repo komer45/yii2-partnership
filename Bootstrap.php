@@ -1,6 +1,5 @@
 <?php
 namespace komer45\partnership;
-//setcookie("TestCookie", $value);		//задаем куку
 
 use Yii;
 use komer45\partnership\models\Follow;
@@ -24,8 +23,10 @@ class Bootstrap implements BootstrapInterface
 			$refFrom = Yii::$app->request->referrer;				//ссылаемся на предыдущую страницу $_SERVER['HTTP_REFERER'];
 			Yii::$app->session['url_from'] = $refFrom;						//записываем переход в сессию
 			$ip =  $_SERVER["REMOTE_ADDR"];							//определяем ip юзера
-			$partnercode = Partner::find()->where(['code' => $_GET['code']])->one();			//находим партнера
-			Yii::$app->session['code'] = $partnercode->code;						//запишем код партнера в сессию
+			if(isset($_GET['code'])){
+				$partnercode = Partner::find()->where(['code' => $_GET['code']])->one();			//находим партнера
+				Yii::$app->session['code'] = $partnercode->code;						//запишем код партнера в сессию
+			}else {$partnercode = 0;}
 			/*проведем работу с coockie*/
 			if (!isset(Yii::$app->request->cookies['tmp_user_id'])) {
 				Yii::$app->response->cookies->add(new \yii\web\Cookie([
