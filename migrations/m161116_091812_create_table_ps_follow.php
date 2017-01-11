@@ -24,6 +24,7 @@ class m161116_091812_create_table_ps_follow extends Migration
                'url_from'=> $this->string(55)->null()->defaultValue(null),
                'partner'=> $this->integer(11)->notNull(),
                'date'=> $this->date()->notNull(),
+			   'status'=> $this->string(1)->notNull()->defaultValue('0'),
             ], $tableOptions);
     }
 

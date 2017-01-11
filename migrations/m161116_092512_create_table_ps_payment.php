@@ -21,6 +21,7 @@ class m161116_092512_create_table_ps_payment extends Migration
                'sum'=> $this->decimal(11, 2)->null()->defaultValue(null),
                'date'=> $this->date()->null()->defaultValue(null),
                'partner_id'=> $this->integer(11)->null()->defaultValue(null),
+			   'status'=> $this->string(1)->notNull()->defaultValue('0'),
             ], $tableOptions);
 
     }
