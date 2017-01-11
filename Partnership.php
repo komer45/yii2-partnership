@@ -1,5 +1,4 @@
 <?php 
-
 namespace komer45\partnership;
 
 use Yii;

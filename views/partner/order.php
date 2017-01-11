@@ -4,6 +4,7 @@ use yii\helpers\Url;
 use kartik\grid\GridView;
 $this->title = 'Заказ: '.$order->id;
 $this->params['breadcrumbs'][] = ['label' => 'Вознаграждения', 'url' => ["/partnership/partner/view?id=$partnerId"]];
+
 ?>
 <div class="partner-admin">
 Showing <b>1-1</b> of <b>1</b> items.

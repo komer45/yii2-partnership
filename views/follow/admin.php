@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
 $this->title = 'История Следований';
+
 ?>
 	<?php echo GridView::widget([
 			'dataProvider' => $dataProvider,

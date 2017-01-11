@@ -8,6 +8,7 @@ use yii\data\Sort;
 
 $this->title = 'Мои рефералы';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="partner-admin">
 

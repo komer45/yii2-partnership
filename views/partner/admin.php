@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 use yii\data\Sort;
 
 $this->title = "Партнеры";
+
 ?>
 <div class="partner-admin">
     <?php echo GridView::widget([
