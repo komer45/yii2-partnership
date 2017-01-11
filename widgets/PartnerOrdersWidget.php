@@ -16,10 +16,8 @@ class PartnerOrdersWidget extends \yii\base\Widget
 	
 	public function run()
     {
-	
 		echo Html::a('Мои отчисления', Url::to(['/partnership/payment']));
 		echo ' ';
 		echo Html::a('Мои рефералы', Url::to(['/partnership/partner']));
-	
 	}
 }

@@ -46,10 +46,9 @@ class FollowController extends Controller
     {
         $searchModel = new SearchFollow();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-		
 		$partner = Partner::find()->where(['user_id' => Yii::$app->user->id])->one();
         $model = Follow::find()->where(['partner' => $partner->code])->all();
+		
 		return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -73,16 +72,12 @@ class FollowController extends Controller
 	
     public function actionAdmin()
     {
-		//$partner = Partner::find()->all();
-        //$model = Follow::find()->all();
 		$searchModel = new SearchFollow();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 		$dataProvider->sort->defaultOrder = ['id' => SORT_DESC];
 		
 		
 		return $this->render('admin', [
-			//'partner' => $partner,
-			//'model' => $model
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider
 			
@@ -96,7 +91,6 @@ class FollowController extends Controller
      */
     public function actionView($id, $pCode)	//id партнера, pCode партнера
     {
-		//die('hello!');
         $partnerSearchModel = new SearchFollow();
         $partnerDataProvider = $partnerSearchModel->search(Yii::$app->request->queryParams);
 		$partnerDataProvider->query->andWhere(['partner' => $pCode]);
@@ -227,20 +221,5 @@ class FollowController extends Controller
 		$model->update();
 		return $this->redirect(Yii::$app->request->referrer);
 	}
-	
-	
-	/*
-	public function actionActivate($statusTo, $id)	//id follow
-    {
-		$model = Follow::find()->where(['id' => $partner])->one();
-		if ($statusTo == 0){
-			$model->status = 0;
-		}elseif ($statusTo == 1){
-			$model->status = 1;
-		}
-		$model->update();
-		return $this->redirect('admin');
-	}
-	*/
-	
+		
 }

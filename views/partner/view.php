@@ -10,7 +10,6 @@ use yii\web\JsExpression;
 use yii\bootstrap\Modal;
 use yii\helpers\ArrayHelper;
 use yii\data\Sort;
-
 use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
@@ -97,128 +96,98 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>  
   
- <?php
-
-/*var_dump($model2);
-die;*/
-?> 
-  
-  
 <div class="setting-view">
+	<ul class="nav nav-tabs">
+	  <li class="active"><a data-toggle="tab" href="#payment">Выплаты</a></li>
+	  <li><a data-toggle="tab" href="#profit">Начисления</a></li>
+	</ul>
+	<div class="tab-content">
+	  <div id="payment" class="tab-pane fade in active">
 
-
-
-
-<ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#payment">Выплаты</a></li>
-  <li><a data-toggle="tab" href="#profit">Начисления</a></li>
-</ul>
-
-<div class="tab-content">
-  <div id="payment" class="tab-pane fade in active">
-
-	    <?php echo GridView::widget([
-        'dataProvider' => $paymentDataProvider,
-        'filterModel' => $paymentSearchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-			
-			'date',
-			'sum',
-			[
-			    'format' => 'raw',
-				'header' => $sortStatus->link('status'),
+			<?php echo GridView::widget([
+			'dataProvider' => $paymentDataProvider,
+			'filterModel' => $paymentSearchModel,
+			'columns' => [
+				['class' => 'yii\grid\SerialColumn'],
 				
-				'filter' =>  Select2::widget([
-					'name' => 'SearchPayment[status]',
-					'data'  => [0 => 'Не выплачено', 1 => 'Выплачено'],
-					'options' => ['placeholder' => 'Статус...'],
-					'pluginOptions' => [
-						'tags' => true,
-						'tokenSeparators' => [',', ' '],
-						'maximumInputLength' => 10
-					],
-				]),
-				
-				'value' => function($model) {
-					if($model->status == 0){
-						return Html::a('Выплатить', Url::to(['/partnership/partner/make-payment', 'paymentId' => $model->id]));
-					}else {
-						return 'Выплачено';
-					}
-				},
-			]
-			
-		],
-    ]); ?>  
-	  
-  </div>
-  <div id="profit" class="tab-pane fade">
-    
-	    <?php 
-		echo GridView::widget([
-        'dataProvider' => $profitDataProvider,
-        'filterModel' => $profitSearchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-			
-			[
-			    'format' => 'raw',
-				'header' => $sortOrder->link('order_id'), 
-				'value' => function($model) {
-					return Html::a("$model->order_id", Url::to(['/partnership/partner/order-view', 'orderId' => $model->order_id]));
-				},
-				'filter' =>  Select2::widget([
-					'name' => 'SearchOrderHistory[order_id]',
-					//'value' => 'red', // initial value
-					//'model' => $userList,
-					'data'  => ArrayHelper::map($orders, 'order_id', 'order_id'),
-					'options' => ['placeholder' => 'Заказа №...'],
-					'pluginOptions' => [
-						'tags' => true,
-						'tokenSeparators' => [',', ' '],
-						'maximumInputLength' => 10
-					],
-				])
+				'date',
+				'sum',
+				[
+					'format' => 'raw',
+					'header' => $sortStatus->link('status'),
+					
+					'filter' =>  Select2::widget([
+						'name' => 'SearchPayment[status]',
+						'data'  => [0 => 'Не выплачено', 1 => 'Выплачено'],
+						'options' => ['placeholder' => 'Статус...'],
+						'pluginOptions' => [
+							'tags' => true,
+							'tokenSeparators' => [',', ' '],
+							'maximumInputLength' => 10
+						],
+					]),
+					
+					'value' => function($model) {
+						if($model->status == 0){
+							return Html::a('Выплатить', Url::to(['/partnership/partner/make-payment', 'paymentId' => $model->id]));
+						}else {
+							return 'Выплачено';
+						}
+					},
+				]
 			],
-			'date',
-			'recoil',
-			[
-			    'format' => 'raw',
-				'header' => $sort->link('user_id'),
-				'value' => function($model) {
-					return $model->user->name;
-				},
-				//'filter' => Html::input('user', 'SearchOrderHistory[username]'),
+		]); ?>  
+		  
+	  </div>
+	  <div id="profit" class="tab-pane fade">
+		
+			<?php 
+			echo GridView::widget([
+			'dataProvider' => $profitDataProvider,
+			'filterModel' => $profitSearchModel,
+			'columns' => [
+				['class' => 'yii\grid\SerialColumn'],
 				
-				
-				
-				'filter' =>  Select2::widget([
-					'name' => 'SearchOrderHistory[user_id]',
-					//'value' => 'red', // initial value
-					//'model' => $userList,
-					'data'  => ArrayHelper::map($users, 'id', 'name'),
-					'options' => ['placeholder' => 'Choose a user ...'],
-					'pluginOptions' => [
-						'tags' => true,
-						'tokenSeparators' => [',', ' '],
-						'maximumInputLength' => 10
-					],
-				])
-				
-				
-				
+				[
+					'format' => 'raw',
+					'header' => $sortOrder->link('order_id'), 
+					'value' => function($model) {
+						return Html::a("$model->order_id", Url::to(['/partnership/partner/order-view', 'orderId' => $model->order_id]));
+					},
+					'filter' =>  Select2::widget([
+						'name' => 'SearchOrderHistory[order_id]',
+						'data'  => ArrayHelper::map($orders, 'order_id', 'order_id'),
+						'options' => ['placeholder' => 'Заказа №...'],
+						'pluginOptions' => [
+							'tags' => true,
+							'tokenSeparators' => [',', ' '],
+							'maximumInputLength' => 10
+						],
+					])
+				],
+				'date',
+				'recoil',
+				[
+					'format' => 'raw',
+					'header' => $sort->link('user_id'),
+					'value' => function($model) {
+						return $model->user->name;
+					},
+
+					'filter' =>  Select2::widget([
+						'name' => 'SearchOrderHistory[user_id]',
+						'data'  => ArrayHelper::map($users, 'id', 'name'),
+						'options' => ['placeholder' => 'Choose a user ...'],
+						'pluginOptions' => [
+							'tags' => true,
+							'tokenSeparators' => [',', ' '],
+							'maximumInputLength' => 10
+						],
+					])
+				],
 			],
-		],
-    ]); 
-	
-	?>
-	
-  </div>
-
-</div>
-
-
-
-
+		]); 
+		?>
+	  </div>
+	</div>
 </div>

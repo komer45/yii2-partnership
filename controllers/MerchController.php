@@ -17,16 +17,6 @@ class MerchController extends Controller
     public function behaviors()
     {
         return [
-			/*'access' => [
-				'class' => \yii\filters\AccessControl::className(),
-				'only' => ['index'],
-				'rules' => [
-                    [
-                        'allow' => true,	//право доступа
-                        'roles' => ['@'],	//РОЛИ(-Ъ), которые имеют доступ к странице
-                    ],
-                ],
-            ],*/
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

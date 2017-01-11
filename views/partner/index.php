@@ -15,9 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		echo GridView::widget([
 			'dataProvider' => $dataProvider,
 			'filterModel' => $searchModel,
-			
 			'columns' =>[
-				
 				[
 					'format' => 'raw',
 					'header' => $sortReferal->link('user_id'),
@@ -28,8 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
 					},
 					'filter' =>  Select2::widget([
 					'name' => 'SearchFollow[user_id]',
-					//'value' => 'red', // initial value
-					//'model' => $userList,
 					'data'  => ArrayHelper::map($users, 'id', 'name'),
 					'options' => ['placeholder' => 'Choose a user ...'],
 					'pluginOptions' => [
@@ -48,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					'format' => 'raw',
 					'header' => $sortStatus->link('status'),
 					'value' => function($model) {
-						if($model->status == 0){								//!ВАЖНО: РЕФАКТОР СТАТУСА!
+						if($model->status == 0){
 							return 'Неактивно';
 						}else{
 							return 'Активно';
@@ -56,8 +52,6 @@ $this->params['breadcrumbs'][] = $this->title;
 					},
 					'filter' =>  Select2::widget([
 						'name' => 'SearchFollow[status]',
-						//'value' => 'red', // initial value
-						//'model' => $userList,
 						'data'  => ['0' => 'Неактивно', '1' => 'Активно'],
 						'options' => ['placeholder' => 'Статус...'],
 						'pluginOptions' => [
@@ -70,5 +64,4 @@ $this->params['breadcrumbs'][] = $this->title;
 			]
 		])
 	?>
-	
 </div>

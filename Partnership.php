@@ -32,7 +32,6 @@ class Partnership extends \yii\base\Component
 		$addFollow->date = date('Y-m-d');
 		$addFollow->url_from = $urlFrom;
 		$part = Partner::find()->where(['code' => Yii::$app->session['code']])->one();
-		
 		$addFollow->status = 1;
 
 		if ($part)		//записываем в Follow только тогда, когда уверены в том, что партнер записан в базе, а такого юзера еще нет 

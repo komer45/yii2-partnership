@@ -12,29 +12,7 @@ use yii\base\BootstrapInterface;
 class Bootstrap implements BootstrapInterface
 {
     public function bootstrap($app)	//$app - сервис локатор
-    {
-		/**/
-		$cookies = Yii::$app->response->cookies;
-						
-			$cookies->add(new \yii\web\Cookie([
-				'name' => 'recoil',
-				'value' => $session['recoil']
-			]));
-			$cookies->add(new \yii\web\Cookie([
-				'name' => 'sumOrder',
-				'value' => $session['sumOrder']
-			]));
-			$cookies->add(new \yii\web\Cookie([
-				'name' => 'sumSearch',
-				'value' => $session['sumSearch']
-			]));
-			$cookies->add(new \yii\web\Cookie([
-				'name' => 'percent',
-				'value' => $session['percent']
-			]));
-		/**/	
-		
-		//Yii::$app->session
+    {		
         if(!$app->has('Partnership')) {
             $app->set('Partnership', ['class' => '\komer45\partnership\Partnership']);
         }

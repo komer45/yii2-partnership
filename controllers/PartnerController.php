@@ -31,14 +31,13 @@ class PartnerController extends Controller
     {
         return [
 		'access' => [
-				'class' => \yii\filters\AccessControl::className(),
-				'only' => ['admin'],
-				'rules' => [
+                'class' => AccessControl::className(),
+                'rules' => [
                     [
-                        'allow' => true,	//true - Указанная роль имеет доступ к указанной странице; false - Указанная роль не имеет доступ к указанной странице.
-                        'roles' => ['administrator'],	//РОЛИ(-Ъ), которые имеют доступ к странице
+                        'allow' => true,
+                        'roles' => $this->module->adminRoles,
                     ],
-                ],
+                ]
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -178,14 +177,11 @@ class PartnerController extends Controller
 		$orderHistoryDataProvider->sort->defaultOrder = ['id' => SORT_DESC];
 		
 		$referals = OrderHistory::find()->where(['partner_id' => $id])->asArray()->all();
-		//$referals = array_unique($referals);
-		//var_dump(count($referals));
-		
 		$referalsIds = ArrayHelper::getColumn($referals, 'user_id');
 		$referalsIds = array_unique($referalsIds);
 		$users = User::find()->where(['id' => $referalsIds])->all();
 		$orders = OrderHistory::find()->all();
-		/**/
+
 		$sort = new Sort([
 			'attributes' => [
 				'user_id' => [
@@ -194,7 +190,6 @@ class PartnerController extends Controller
 				],
 			],	
 		]);
-		/**/
 
 		$sortStatus = new Sort([
 			'attributes' => [
@@ -215,9 +210,6 @@ class PartnerController extends Controller
 			],	
 		]);
 		
-		/*echo '<pre>';
-		var_dump(Partner::find()->where(['id' => $id])->all());
-		die;*/
 		
         return $this->render('view', [
 			'paymentDataProvider' => $paymentDataProvider,
@@ -288,11 +280,6 @@ class PartnerController extends Controller
 	{
 		$pay = Yii::$app->Partnership->makePayment($paymentId);		//отправляем в функцию makePayment($paymentId) в модуль Partnership.php
 		return $this->redirect(Yii::$app->request->referrer);
-		if ($pay){													//если выполнено успешно
-			//return $this->redirect(Yii::$app->request->referrer);
-		} else{
-			//die('Error');
-		}
 	}
 
     /**
@@ -313,8 +300,6 @@ class PartnerController extends Controller
 	
 	public function actionBecomePartner($userId)
 	{
-		// id  	user_id 	code 	status
-
 		$model = Partner::find()->where(['user_id' => $userId])->one();
 		if (!$model){
 			$partner = new Partner();
@@ -338,13 +323,7 @@ class PartnerController extends Controller
 		$order = Order::findOne($orderId);
 		$orderElement = Element::find()->where(['order_id' => $orderId])->one();
 		$partnerId = Partner::find()->where(['user_id' => Yii::$app->user->id])->one()->id;
-		//$element = Element::find()->where(['order_id' => $orderId])->one();
-		
-		/*$searchOrder = new OrderSearch();
-        $orderDateProvider = $searchOrder->search(Yii::$app->request->queryParams);
-		$orderDateProvider->query->andWhere(['id' => $orderId]);*/
-		//$model = Element::find()->where(['order_id'=>$orderId])->joinWith('elementsRelation')->one();
-		//$model = $this->getOrder($orderId);
+
 		return $this->render('order', [
 				'order' => $order,
 				'orderElement' => $orderElement,

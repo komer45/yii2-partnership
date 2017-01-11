@@ -9,8 +9,6 @@ use yii\data\Sort;
 $this->title = "Партнеры";
 ?>
 <div class="partner-admin">
-
-
     <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -39,7 +37,6 @@ $this->title = "Партнеры";
 				])
 			],
 			'code',
-			//'status',
 			[
 			    'format' => 'raw',
 				'header' => $sortStatus->link('status'),
@@ -88,7 +85,5 @@ $this->title = "Партнеры";
             //['class' => 'yii\grid\ActionColumn', 'template' => '{update} {delete}',  'buttonOptions' => ['class' => 'btn btn-default'], 'options' => ['style' => 'width: 65px;']]
         ],
     ]); ?>
-	
-	
-	
+
 </div>

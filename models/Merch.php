@@ -55,7 +55,7 @@ class Merch extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
         return $this->id;
     }
 	
-	public function getId()		//без этой команды гооарит, что в merch нет функции getId()
+	public function getId()		//без этой команды говорит, что в merch нет функции getId()
     {
         return $this->id;
     }

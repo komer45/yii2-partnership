@@ -32,8 +32,6 @@ $this->title = 'Партнер: '.$model->id;
 					},
 					'filter' =>  Select2::widget([
 					'name' => 'SearchFollow[user_id]',
-					//'value' => 'red', // initial value
-					//'model' => $userList,
 					'data'  => ArrayHelper::map($users, 'id', 'name'),
 					'options' => ['placeholder' => 'Choose a user ...'],
 					'pluginOptions' => [
@@ -48,7 +46,7 @@ $this->title = 'Партнер: '.$model->id;
 					'format' => 'raw',
 					'header' => $sortStatus->link('status'), 
 					'value' => function($model) {
-						if($model->status == 1){	//!ВАЖНО: РЕФАКТОР СТАТУСОВ!
+						if($model->status == 1){
 							return 'Активно';
 						}else {
 							return 'Неактивно';
@@ -56,8 +54,6 @@ $this->title = 'Партнер: '.$model->id;
 					},
 					'filter' =>  Select2::widget([
 					'name' => 'SearchFollow[status]',
-					//'value' => 'red', // initial value
-					//'model' => $userList,
 					'data'  => [0 => 'Неактивно', 1 => 'Активно'],
 					'options' => ['placeholder' => 'Статус...'],
 					'pluginOptions' => [
@@ -71,7 +67,7 @@ $this->title = 'Партнер: '.$model->id;
 					'format' => 'raw',
 					'label' => 'Активность',
 					'value' => function($model){
-						if($model->status ==  0){		//!ВАЖНО: РЕФАКТОР СТАТУСОВ!
+						if($model->status ==  0){
 							return Html::a('Активировать', Url::to(['/partnership/follow/activate', 'followId' => $model->id]));
 						}else {
 							return Html::a('Деактивировать', Url::to(['/partnership/follow/deactivate', 'followId' => $model->id]));
@@ -83,9 +79,3 @@ $this->title = 'Партнер: '.$model->id;
 			
 	]);
 ?>
-
-	 </div>
-
-</div>
-
-</div>

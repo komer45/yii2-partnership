@@ -47,7 +47,6 @@ class PaymentController extends Controller
         $paymentSearchModel = new SearchPayment();
         $paymentDataProvider = $paymentSearchModel->search(Yii::$app->request->queryParams);
 		$paymentDataProvider->query->andWhere(['partner_id' => $partnerModel->id]);
-		//echo '<pre>';
 		
         $orderHistorySearchModel = new SearchOrderHistory();
         $orderHistoryDataProvider = $orderHistorySearchModel->search(Yii::$app->request->queryParams);
@@ -66,19 +65,7 @@ class PaymentController extends Controller
         if($dateStop = yii::$app->request->get('date_stop')) {
             $orderHistoryDataProvider->query->andWhere(['<=', 'date', date('Y-m-d H:i:s', strtotime($dateStop) + 86399)]);
 		}
-		
-		
-		/*if($dateStart = yii::$app->request->get('date_start')) {
-            $paymentDataProvider->query->andWhere(['>=', 'date', date('Y-m-d', strtotime($dateStart))]);
 
-        }
-
-        if($dateStop = yii::$app->request->get('date_stop')) {
-            $paymentDataProvider->query->andWhere(['<=', 'date', date('Y-m-d H:i:s', strtotime($dateStop) + 86399)]);
-		}*/
-		
-
-		/**/
 		$sort = new Sort([
 			'attributes' => [
 				'status' => [
@@ -87,7 +74,6 @@ class PaymentController extends Controller
 				],
 			],	
 		]);
-		/**/
 		
         return $this->render('index', [
             'paymentSearchModel' => $paymentSearchModel,
