@@ -122,12 +122,17 @@ public function afterSignup(array $profileData = [])
 ```php
 <?php
 use komer45\partnership\widgets\OrderWidget;
-use komer45\partnership\widgets\PaymentWidget;
+use komer45\partnership\widgets\PartnerWidget;
 use komer45\partnership\widgets\AdminWidget;
+use komer45\partnership\widgets\SettingWidget;
+use komer45\partnership\widgets\PartnerOrdersWidget;
 ?>
-<?=OrderWidget::widget();?>		//Виджет заказа
-<?=PaymentWidget::widget();?>	//Виджет выплат (партнер - оставить заявку на выплату)
-<?=AdminWidget::widget();?>		//Виджет выплат (администратор - выплаты по заявкам)
+<?=OrderWidget::widget();?>			//Виджет заказа
+<?=PartnerWidget::widget();?>		//иджет партнерства
+<?=AdminWidget::widget();?>			//Переход на вкладку администрирования
+<?=PartnerWidget::widget();?>		//Виджет определения партнера
+<?=SettingWidget::widget();?>		//Переход на вкладку настроек
+<?=PartnerOrdersWidget::widget();?>
 ```
 
 Если необходимо связать данный модуль с модулем кошелька (komer45/yii2-balance), можно сделать подписку на событие. В конфиге модифицируем подключение partnership в разделе modules:
@@ -143,3 +148,4 @@ use komer45\partnership\widgets\AdminWidget;
   ],
 
 ``` 
+Если модель подключаемого User не соответствует 'common\models\User' то ее необходимо задать в Модуле(Module.php) изменив переменную $userModule;
