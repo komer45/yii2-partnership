@@ -171,7 +171,12 @@ $this->params['breadcrumbs'][] = $this->title;
 					'format' => 'raw',
 					'header' => $sort->link('user_id'),
 					'value' => function($model) {
-						return $model->user->name;
+						$userModel = Yii::$app->user->identity;			//Для идентифицирования пользователей системы
+						$user = $userModel::findOne($model->user_id);	//находим пользователя по данному полю
+						if(!$user){
+							return false;
+						}
+						return $user->username;								//выводим имя пользователя
 					},
 
 					'filter' =>  Select2::widget([

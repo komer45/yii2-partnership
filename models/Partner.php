@@ -46,4 +46,10 @@ class Partner extends \yii\db\ActiveRecord
 
         ];
     }
+	
+	public function getUser()
+	{
+		$userModel = Yii::$app->getModule('partnership')->userModel;
+		return $this->hasOne($userModel::className(), ['id' => 'user_id'])->one();
+	}
 }

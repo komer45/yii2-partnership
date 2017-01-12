@@ -14,8 +14,21 @@ use yii\helpers\Url;
 class Module extends \yii\base\Module
 {
 	const EVENT_MAKE_PAYMENT = 'makePayment';
-	
+	public $userModel = 'common\models\User';
 	public $adminRoles = ['admin'];
+	
+	public function init()
+    {
+		parent::init();
+		if (!isset($userModel)){
+			$this->userModel = Yii::$app->user->identityClass;
+		}
+    }
+	
+	public function run()
+    {
+
+    }
 	
 //public $layoutPath = 'C:\OpenServer\domains\yii2-starter-kit\common\modules\komer45\yii2-partnership\views\layouts';
 	public function onOrderCreate(OrderEvent $event)

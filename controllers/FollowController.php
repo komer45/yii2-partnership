@@ -16,7 +16,7 @@ use yii\filters\AccessControl;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 
-
+ini_set('error_reporting', E_ALL);
 /**
  * FollowController implements the CRUD actions for Follow model.
  */
@@ -118,12 +118,14 @@ class FollowController extends Controller
 		$referals = Follow::find()->where(['partner' => $partnerId])->asArray()->all();
 		$referalsIds = ArrayHelper::getColumn($referals, 'user_id');
 		$referalsIds = array_unique($referalsIds);
-		$users = User::find()->where(['id' => $referalsIds])->all();
-		
+		$userModel = Yii::$app->getModule('partnership')->userModel;
+		$users = $userModel::find()->where(['id' => $referalsIds])->all();
+		$partner = $this->findPartner($id);
+
         return $this->render('view', [
 			'DataProvider' => $partnerDataProvider,
 			'SearchModel' => $partnerSearchModel,
-            'model' => $this->findPartner($id),
+            'model' => $partner,
 			'sortReferals' => $sortReferals,
 			'sortStatus' => $sortStatus,
 			'users' => $users

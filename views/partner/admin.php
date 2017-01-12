@@ -24,11 +24,14 @@ $this->title = "Партнеры";
 				'value' => function($model) {
 					$userModel = Yii::$app->user->identity;			//Для идентифицирования пользователей системы
 					$user = $userModel::findOne($model->user_id);	//находим пользователя по данному полю
+					if(!$user){
+						return false;
+					}
 					return $user->name;								//выводим имя пользователя
 				},
 				'filter' =>  Select2::widget([
 					'name' => 'SearchOrderHistory[user_id]',
-					'data'  => ArrayHelper::map($users, 'id', 'name'),
+					'data'  => ArrayHelper::map($users, 'id', 'username'),
 					'options' => ['placeholder' => 'Choose a user ...'],
 					'pluginOptions' => [
 						'tags' => true,

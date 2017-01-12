@@ -28,6 +28,9 @@ $this->title = 'Партнер: '.$model->id;
 					'value' => function($model) {
 						$userModel = Yii::$app->user->identity;			//Для идентифицирования пользователей системы
 						$user = $userModel::findOne($model->user_id);	//находим пользователя по данному полю
+						if (!$user){
+							return false;
+						}
 						return $user->name;								//выводим имя пользователя
 					},
 					'filter' =>  Select2::widget([

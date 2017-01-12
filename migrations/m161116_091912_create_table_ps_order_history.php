@@ -25,7 +25,7 @@ class m161116_091912_create_table_ps_order_history extends Migration
                'date'=> $this->date()->notNull(),
                'order_id'=> $this->integer(11)->null()->defaultValue(null),
                'recoil'=> $this->decimal(11, 2)->null()->defaultValue(null),
-               'status'=> $this->text()->null()->defaultValue(null),
+               'status' => "ENUM('new', 'process', 'payed') NOT NULL",
                'partner_id'=> $this->integer(11)->null()->defaultValue(null),
             ], $tableOptions);
 

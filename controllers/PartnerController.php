@@ -4,7 +4,7 @@ namespace komer45\partnership\controllers;
 
 use Yii;
 use yii\data\Sort;
-use common\models\User;
+//use common\models\User;
 use komer45\partnership\models\Partner;
 use komer45\partnership\models\SearchPartner;
 use komer45\partnership\models\Payment;
@@ -79,7 +79,8 @@ class PartnerController extends Controller
 		$referals = Follow::find()->where(['partner' => $partnerId])->asArray()->all();
 		$referalsIds = ArrayHelper::getColumn($referals, 'user_id');
 		$referalsIds = array_unique($referalsIds);
-		$users = User::find()->where(['id' => $referalsIds])->all();
+		$userModel = Yii::$app->getModule('partnership')->userModel;
+		$users = $userModel::find()->where(['id' => $referalsIds])->all();
 		
 		$sortReferal = new Sort([
 			'attributes' => [
@@ -124,10 +125,11 @@ class PartnerController extends Controller
 			],	
 		]);
 
+		$userModel = Yii::$app->getModule('partnership')->userModel;
 		$partnerId = Partner::find()->all();
 		$referalsIds = ArrayHelper::getColumn($partnerId, 'user_id');
 		$referalsIds = array_unique($referalsIds);
-		$users = User::find()->where(['id' => $referalsIds])->all();
+		$users = $userModel::find()->where(['id' => $referalsIds])->all();
 		
         return $this->render('admin', [
             'searchModel' => $searchModel,
@@ -181,7 +183,8 @@ class PartnerController extends Controller
 		$referals = OrderHistory::find()->where(['partner_id' => $id])->asArray()->all();
 		$referalsIds = ArrayHelper::getColumn($referals, 'user_id');
 		$referalsIds = array_unique($referalsIds);
-		$users = User::find()->where(['id' => $referalsIds])->all();
+		$userModel = Yii::$app->getModule('partnership')->userModel;
+		$users = $userModel::find()->where(['id' => $referalsIds])->all();
 		$orders = OrderHistory::find()->all();
 
 		$sort = new Sort([
