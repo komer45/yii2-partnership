@@ -142,7 +142,7 @@ use komer45\partnership\widgets\PartnerOrdersWidget;
 				'on makePayment' => function($event){
 					$model = $event->model;
 					$userId = Yii::$app->Partnership->getUserByPartnerId($model->partner_id);
-					$balance = Yii::$app->balance->getUserBalance($userId);
+					$balance = Yii::$app->balance->getUserScore($userId);
 					Yii::$app->balance->addTransaction($balance->id, 'in', $model->sum, 'partnership rewads');
 				}
   ],
