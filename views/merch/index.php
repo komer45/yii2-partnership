@@ -25,23 +25,20 @@ use yii\helpers\Url;
 
 <form action='merch/order' method='POST'>
 	<div class="form-group">
+	<?php echo Html :: hiddenInput(\Yii :: $app->getRequest()->csrfParam, \Yii :: $app->getRequest()->getCsrfToken(), []); ?>
 		<?/*= Html::submitButton('Заказать', ['class' => 'btn btn-primary']) */?>
 		<input type='submit' value='Заказать'>
 	</div>
 </form>
 	
 <?
-foreach ($merch as $product)
-{
-		echo 'Номер: '.$product->id.'<br>';
-		echo 'Наименование: '.$product->name.'<br>';
-		echo 'Цена: '.$product->price.'<br>';
-		echo 'Кол-во: '.ChangeCount::widget(['model' => $product]);
-		echo 'Коммент: '.$product->comment.'<br>';
-		echo BuyButton::widget(['model' => $product, 'price' => $product->getCartPrice(),  'text' => 'В корзину']);
-
-		echo '<br>';
-		echo BuyButton::widget(['model' => $product, 'text' => 'Заказать', 'htmlTag' => 'a', 'cssClass' => 'custom_class']);
+foreach ($merch as $product){
+	echo 'Номер: '.$product->id.'<br>';
+	echo 'Наименование: '.$product->name.'<br>';
+	echo 'Цена: '.$product->price.'<br>';
+	echo 'Кол-во: '.ChangeCount::widget(['model' => $product]);
+	echo 'Коммент: '.$product->comment.'<br>';
+	echo BuyButton::widget(['model' => $product, 'price' => $product->getCartPrice(),  'text' => 'В корзину']);
 }
 
 $elements = yii::$app->cart->elements;

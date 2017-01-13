@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	</div>
 	<div class="panel-body">
 		<form action="" class="row search">
-			<input type="hidden" name="id" value="<?=$model->id?>" />
+			<input type="hidden" name="id" value="" />
 			<input type="hidden" name="OperationSearch[name]" value="" />
 
 			<div class="col-md-4">
@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				<input class="form-control btn-success" type="submit" value="<?=Yii::t('order', 'Search');?>" />
 			</div>
 			<div class="col-md-3">
-				<a class="btn btn-default" href="<?= Url::to(["/partnership/partner/view?id=$model->id"]) ?>" />Cбросить все фильтры</a>
+				<a class="btn btn-default" href="<?= Url::to(["/partnership/payment"]) ?>" />Cбросить все фильтры</a>
 			</div>
 		</form>
 	</div>

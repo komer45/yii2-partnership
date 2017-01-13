@@ -312,7 +312,7 @@ class PartnerController extends Controller
 			$partner->user_id = $userId;
 			$code1 = (string)Yii::$app->user->identity->username;
 			$code2 = (string)Yii::$app->user->id;
-			$code = $code1.$code2;
+			$code = /*$code1.*/$code2;
 			$partner->code = $code;
 
 			if ($partner->validate())

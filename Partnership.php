@@ -18,6 +18,7 @@ class Partnership extends \yii\base\Component
 
 	public function addFollow($userId, $urlFrom, $urlTo, $ip, $partner)
 	{
+		//die('we are here');
 		$addFollow = new Follow;
 		$tmp =	strval(Yii::$app->request->cookies['tmp_user_id']);
 		$addFollow->ip = $ip;
@@ -31,7 +32,7 @@ class Partnership extends \yii\base\Component
 		$addFollow->date = date('Y-m-d');
 		$addFollow->url_from = $urlFrom;
 		$part = Partner::find()->where(['code' => Yii::$app->session['code']])->one();
-		$addFollow->status = 1;
+		//$addFollow->status = 1;
 
 		if ($part)		//записываем в Follow только тогда, когда уверены в том, что партнер записан в базе, а такого юзера еще нет 
 		{
@@ -42,9 +43,9 @@ class Partnership extends \yii\base\Component
 				if(!$followsarch){ 								//записываем в базу только тогда, когда уверены, что нет совпадений (юзер не найден)
 					if($addFollow->validate()){
 						$addFollow->save();
-						}//else echo 'no1!';
-					} //else  echo 'Данный пользователь уже есть в системе!';	//выводим эхом
-		} //else echo 'Такая запись уже есть в системе!';
+						}else echo 'no1!';
+					}else  echo 'Данный пользователь уже есть в системе!';	//выводим эхом
+		}else echo 'Такая запись уже есть в системе!';
 	}
 	
 	public function makePayment($paymentId)						//из экшна actionMakePayment (PartnerController) переходим сюда
