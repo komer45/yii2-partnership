@@ -27,7 +27,7 @@ $this->title = "Партнеры";
 					if(!$user){
 						return false;
 					}
-					return $user->name;								//выводим имя пользователя
+					return $user->username;								//выводим имя пользователя
 				},
 				'filter' =>  Select2::widget([
 					'name' => 'SearchOrderHistory[user_id]',

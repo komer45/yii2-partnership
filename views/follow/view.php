@@ -6,8 +6,6 @@ use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use komer45\partnership\widgets\PartnerWidget;
 
-echo PartnerWidget::widget();
-
 $this->title = 'Партнер: '.$model->id;
 ?>
 
@@ -31,11 +29,11 @@ $this->title = 'Партнер: '.$model->id;
 						if (!$user){
 							return false;
 						}
-						return $user->name;								//выводим имя пользователя
+						return $user->username;								//выводим имя пользователя
 					},
 					'filter' =>  Select2::widget([
 					'name' => 'SearchFollow[user_id]',
-					'data'  => ArrayHelper::map($users, 'id', 'name'),
+					'data'  => ArrayHelper::map($users, 'id', 'username'),
 					'options' => ['placeholder' => 'Choose a user ...'],
 					'pluginOptions' => [
 						'tags' => true,

@@ -181,7 +181,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 					'filter' =>  Select2::widget([
 						'name' => 'SearchOrderHistory[user_id]',
-						'data'  => ArrayHelper::map($users, 'id', 'name'),
+						'data'  => ArrayHelper::map($users, 'id', 'username'),
 						'options' => ['placeholder' => 'Choose a user ...'],
 						'pluginOptions' => [
 							'tags' => true,

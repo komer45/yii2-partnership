@@ -5,6 +5,7 @@ use Yii;
 use komer45\partnership\models\Follow;
 use komer45\partnership\models\Partner;
 use komer45\partnership\models\Payment;
+use komer45\partnership\models\OrderHistory;
 use komer45\partnership\events\MakePaymentEvent;
 //use yii\helpers\Url;
 
@@ -53,8 +54,13 @@ class Partnership extends \yii\base\Component
 		$paymentModel = Payment::findOne($paymentId);
 		if($paymentModel) {
 			$paymentModel->status = 1;
-
+			$OrderHistory = OrderHistory::find()->where(['partner_id' => $paymentModel->partner_id])->andWhere(['status' => 'process'])->all();
 			if ($paymentModel->save()){
+				foreach($OrderHistory as $order)
+				{
+					$order->status = 'payed';
+					$order->update();
+				}
 				$module = \Yii::$app->getModule('partnership');						//получаем модуль приложения partnership - module.php
 				$paymentEvent = new MakePaymentEvent(['model' => $paymentModel]);	//создаем событие(event) и отсылаем в него paymentModel в качестве параметра 'Module' 
 				$module->trigger($module::EVENT_MAKE_PAYMENT, $paymentEvent);		//в модуль приложения (module.php) ТРИГГЕРОМ

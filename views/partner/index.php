@@ -26,11 +26,11 @@ $this->params['breadcrumbs'][] = $this->title;
 						if(!$user){
 							return false;
 						}
-						return $user->name;								//выводим имя пользователя
+						return $user->username;								//выводим имя пользователя
 					},
 					'filter' =>  Select2::widget([
 					'name' => 'SearchFollow[user_id]',
-					'data'  => ArrayHelper::map($users, 'id', 'name'),
+					'data'  => ArrayHelper::map($users, 'id', 'username'),
 					'options' => ['placeholder' => 'Choose a user ...'],
 					'pluginOptions' => [
 						'tags' => true,
