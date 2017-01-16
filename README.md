@@ -49,6 +49,16 @@ php yii migrate --migrationPath=vendor/komer45/yii2-partnership/migrations
 		//...
 	]
 ```
+Для доступа к компоненту в том же конфиге необходимо подключить обращение:
+```'php'
+	'components' => [
+	...
+		'partnership' => [
+			'class' => 'komer45\partnership\Partnership'
+		],
+	...
+	]
+```
 Для того, чтобы подписаться на совершение покупки необходимо в конфиге прописать следующий код для модуля order:
 
 ```php
