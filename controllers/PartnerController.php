@@ -31,6 +31,7 @@ class PartnerController extends Controller
 {
     public function behaviors()
     {
+
         return [
 		'access' => [
                 'class' => AccessControl::className(),
@@ -60,12 +61,14 @@ class PartnerController extends Controller
         $partnerCode = $searchPartner->search(Yii::$app->request->queryParams);
 		$partnerCode->query->andWhere(['user_id' => Yii::$app->user->id]);
 		
-		$partnerCode = Partner::find()->where(['user_id' => Yii::$app->user->id])->one()->code;
-		
+		$partner = Partner::find()->where(['user_id' => Yii::$app->user->id])->one();
+
         $searchModel = new SearchFollow();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-		$dataProvider->query->andWhere(['partner' => $partnerCode]);
-
+		if($partner){
+			$dataProvider->query->andWhere(['partner' => $partner->code]);
+		}
+		
 		$sortStatus = new Sort([
 			'attributes' => [
 				'status' => [
@@ -75,10 +78,11 @@ class PartnerController extends Controller
 			],	
 		]);
 		
-		$partnerId = Partner::find()->where(['user_id' => Yii::$app->user->id])->one()->code;
-		$referals = Follow::find()->where(['partner' => $partnerId])->asArray()->all();
+		
+		$referals = Follow::find()->where(['partner' => $partner])->asArray()->all();
 		$referalsIds = ArrayHelper::getColumn($referals, 'user_id');
 		$referalsIds = array_unique($referalsIds);
+		
 		$userModel = Yii::$app->getModule('partnership')->userModel;
 		$users = $userModel::find()->where(['id' => $referalsIds])->all();
 		

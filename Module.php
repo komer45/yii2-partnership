@@ -15,7 +15,7 @@ class Module extends \yii\base\Module
 {
 	const EVENT_MAKE_PAYMENT = 'makePayment';
 	public $userModel = 'common\models\User';
-	public $adminRoles = ['admin'];
+	public $adminRoles = ['administrator'];
 	
 	public function init()
     {
