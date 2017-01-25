@@ -10,5 +10,5 @@ use komer45\partnership\controllers\ProductController;
 
 <h3>Форма заказа:</h3>
 <div id="orderForm">
-	<? echo OrderForm::widget(); ?>
+	<?php echo OrderForm::widget(); ?>
 </div>

@@ -23,6 +23,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
+use yii\base\Security;
 
 /**
  * PartnerController implements the CRUD actions for Partner model.
@@ -40,6 +41,12 @@ class PartnerController extends Controller
                         'allow' => true,
                         'roles' => $this->module->adminRoles,
                     ],
+					/*[
+						'actions' => ['referrer'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],*/
+					
                 ]
             ],
             'verbs' => [
@@ -316,7 +323,9 @@ class PartnerController extends Controller
 			$partner->user_id = $userId;
 			$code1 = (string)Yii::$app->user->identity->username;
 			$code2 = (string)Yii::$app->user->id;
-			$code = /*$code1.*/$code2;
+			$code3 = explode('.', round(microtime(), 6));
+			$code3 = $code3[1].Yii::$app->user->id;
+			$code = $code3;
 			$partner->code = $code;
 
 			if ($partner->validate())
@@ -349,15 +358,17 @@ class PartnerController extends Controller
 	public function actionReferrer($code = null)
 	{
 		$request = Yii::$app->request;
-		$refTo = Url::current();								//сюда перешел пользователь (страниця по пересылке)
+		$urlTo = Url::current();								//сюда перешел пользователь (страниця по пересылке)
 		$userId = Yii::$app->user->id;							//получаем id юзера
-		$refFrom = Yii::$app->request->referrer;				//ссылаемся на предыдущую страницу $_SERVER['HTTP_REFERER'];
-		Yii::$app->session['url_from'] = $refFrom;						//записываем переход в сессию
+		$urlFrom = Yii::$app->request->referrer;				//ссылаемся на предыдущую страницу $_SERVER['HTTP_REFERER'];
+		Yii::$app->session['url_from'] = $urlFrom;						//записываем переход в сессию
 		$ip =  $_SERVER["REMOTE_ADDR"];							//определяем ip юзера
 		if($code){
-			$partnercode = Partner::find()->where(['code' => $code])->one();			//находим партнера
-			Yii::$app->session['code'] = $partnercode->code;						//запишем код партнера в сессию
-		}else {$partnercode = 0;}
+			$partner = Partner::find()->where(['code' => $code])->one();				//находим партнера
+			if($partner){
+				Yii::$app->session['code'] = $partner->code;						//запишем код партнера в сессию
+			}
+		}else {$partner = 0;}
 		/*проведем работу с coockie*/
 		if (!isset(Yii::$app->request->cookies['tmp_user_id'])) {
 			Yii::$app->response->cookies->add(new \yii\web\Cookie([
@@ -366,7 +377,7 @@ class PartnerController extends Controller
 			]));
 		} 
 		/*закончим работу с coockie*/		
-		Yii::$app->Partnership->addFollow($userId, $refFrom, $refTo, $ip, $partnercode);
+		Yii::$app->Partnership->addFollow($userId, $urlFrom, $urlTo, $ip, $partner);
 		return $this->redirect(Yii::$app->homeUrl);
 	}
 	

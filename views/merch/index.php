@@ -31,7 +31,7 @@ use yii\helpers\Url;
 	</div>
 </form>
 	
-<?
+<?php
 foreach ($merch as $product){
 	echo 'Номер: '.$product->id.'<br>';
 	echo 'Наименование: '.$product->name.'<br>';
