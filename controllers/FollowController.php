@@ -16,7 +16,6 @@ use yii\filters\AccessControl;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 
-ini_set('error_reporting', E_ALL);
 /**
  * FollowController implements the CRUD actions for Follow model.
  */
