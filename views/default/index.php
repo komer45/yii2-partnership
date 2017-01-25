@@ -7,8 +7,8 @@
 		padding:10px;
 	}
 </style>
-
-<table style="border-spacing: 10px" border="3" width="100%">
+<div class="partner-admin">
+<table cellpadding=10 border=1 class="table table-bordered">
 	<tr>
 		<td><H2>Наименование(Таблица)</H2></td>
 		<td><H2>Ссылка</H2></td>
@@ -152,3 +152,4 @@
 		</td>
 	</tr>
 </table>
+</div>
