@@ -22,7 +22,7 @@ class m161116_091812_create_table_ps_follow extends Migration
                'tmp_user_id'=> $this->string(55)->null()->defaultValue(null),
                'url_to'=> $this->string(55)->notNull(),
                'url_from'=> $this->string(55)->null()->defaultValue(null),
-               'partner'=> $this->integer(11)->notNull(),
+               'partner'=> $this->string(55)->notNull(),
                'date'=> $this->date()->notNull(),
 			   'status'=> $this->integer(1)->notNull()->defaultValue('1'),
             ], $tableOptions);
