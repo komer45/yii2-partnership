@@ -78,29 +78,35 @@ php yii migrate --migrationPath=vendor/komer45/yii2-partnership/migrations
 				$model->tmp_user_id = $tmp;
 				$follow = \komer45\partnership\models\Follow::find()->where(['tmp_user_id' => $model->tmp_user_id])->one();
 				$part   = \komer45\partnership\models\Follow::find()->where(['tmp_user_id' => $tmp])->one();
-			}       
-			$partner = \komer45\partnership\models\Partner::find()->where(['code' => $part->partner])->one(); //находим партнера по коду
-			$model->partner_id = $partner->id;
+			}
+			if($part){
+				$partner = \komer45\partnership\models\Partner::find()->where(['code' => $part->partner])->one(); //находим партнера по коду
+				$model->partner_id = $partner->id;
+			}
 			$model->sum = $event->model->cost;
 			$model->date = date('Y-m-d');
 			$model->order_id = $event->model->id;
-			$model->follow_id = strval($follow->id);    //сюда нужно записать id таблицы ps_follow
+			if($follow){
+				$model->follow_id = strval($follow->id);    //сюда нужно записать id таблицы ps_follow
+			}
 				$forperc = \komer45\partnership\models\Setting::find()->all();
-				foreach ($forperc as $search)
-				{
-					if ($search->sum >= $model->sum)
+				if($forperc){
+					foreach ($forperc as $search)
 					{
-						$percent = (($model->sum)/100*$search->percent);
-						break;
+						if ($model->sum >= $search->sum)
+						{
+							$percent = (($model->sum)/100*$search->percent);
+							break;
+						}
 					}
+					$model->recoil = $percent;
 				}
-				$model->recoil = $percent;
 				$model->status = 'new';
 			if ($model->validate())
 			{
 				$model->save();
-			} 	else {
-					die('Uh-oh something in config went wrong');
+			}   else {
+					//die('Uh-oh something in config went wrong');
 				}
 		},
 		//..
@@ -110,12 +116,10 @@ php yii migrate --migrationPath=vendor/komer45/yii2-partnership/migrations
 
 ```php
 <?php
-...
-use komer45\partnership\models\Follow;
-...
+
 public function afterSignup(array $profileData = [])
 {
-	$reFollow = Follow::find()->where(['tmp_user_id' => Yii::$app->request->cookies['tmp_user_id']])->one();
+	$reFollow = \komer45\partnership\models\Follow::find()->where(['tmp_user_id' => Yii::$app->request->cookies['tmp_user_id']])->one();
 	$reFollow->tmp_user_id = NULL;
 	$reFollow->user_id = $this->getId();
 	if ($reFollow->validate())
@@ -130,17 +134,16 @@ public function afterSignup(array $profileData = [])
 
 ```php
 <?php
-use komer45\partnership\widgets\OrderWidget;
-use komer45\partnership\widgets\PartnerWidget;
-use komer45\partnership\widgets\AdminWidget;
-use komer45\partnership\widgets\SettingWidget;
-use komer45\partnership\widgets\PartnerOrdersWidget;
+use komer45\partnership\widgets\OrderWidget;			//Виджет заказа
+use komer45\partnership\widgets\PartnerWidget;			//Виджет партнерства
+use komer45\partnership\widgets\AdminWidget;			//Переход на вкладку администрирования
+use komer45\partnership\widgets\SettingWidget;			//Переход на вкладку настроек
+use komer45\partnership\widgets\PartnerOrdersWidget;	//"Мои отчисления", "Мои рефералы" 
 ?>
-<?=OrderWidget::widget();?>			//Виджет заказа
-<?=PartnerWidget::widget();?>		//иджет партнерства
-<?=AdminWidget::widget();?>			//Переход на вкладку администрирования
-<?=PartnerWidget::widget();?>		//Виджет определения партнера
-<?=SettingWidget::widget();?>		//Переход на вкладку настроек
+<?=OrderWidget::widget();?>
+<?=PartnerWidget::widget();?>
+<?=AdminWidget::widget();?>
+<?=SettingWidget::widget();?>
 <?=PartnerOrdersWidget::widget();?>
 ```
 
@@ -148,12 +151,14 @@ use komer45\partnership\widgets\PartnerOrdersWidget;
 ```php
  'partnership' => [
 	...
-				'on makePayment' => function($event){
-					$model = $event->model;
-					$userId = Yii::$app->Partnership->getUserByPartnerId($model->partner_id);
-					$balance = Yii::$app->balance->getUserScore($userId);
+			'on makePayment' => function($event){
+				$model = $event->model;
+				$userId = Yii::$app->Partnership->getUserByPartnerId($model->partner_id);
+				$balance = Yii::$app->balance->getUserScore($userId);
+				if ($balance){
 					Yii::$app->balance->addTransaction($balance->id, 'in', $model->sum, 'partnership rewads');
-				}
+				} else return false;
+			}
   ],
 
 ``` 

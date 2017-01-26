@@ -1,4 +1,4 @@
-<?
+<?php
 namespace komer45\partnership\widgets;
 use Yii;
 use yii\helpers\Html;

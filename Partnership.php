@@ -74,6 +74,6 @@ class Partnership extends \yii\base\Component
 	
 	public function getUserByPartnerId($partnerId)
 	{
-		return Partner::findOne($partnerId)->id;
+		return Partner::findOne($partnerId)->user_id;
 	}
 }
