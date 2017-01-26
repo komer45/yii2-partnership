@@ -175,6 +175,8 @@ $this->params['breadcrumbs'][] = $this->title;
 						$user = $userModel::findOne($model->user_id);	//находим пользователя по данному полю
 						if(!$user){
 							return false;
+						}elseif(!($user->username)){
+							return 'Гость';
 						}
 						return $user->username;								//выводим имя пользователя
 					},
