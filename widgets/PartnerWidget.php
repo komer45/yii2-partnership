@@ -22,7 +22,7 @@ class PartnerWidget extends Widget
 			}elseif($partner->status == 0) {
 				echo "Ваша заявка на рассмотрении";
 			}else {
-				echo 'Ваш реф-код: '.Yii::$app->request->hostInfo.'/partnership/partner/referrer?code='.$partner->code;
+				echo 'Ваша реф-ссылка: '.Yii::$app->request->hostInfo.'/partnership/partner/referrer?code='.$partner->code;
 			}
 	}
 
