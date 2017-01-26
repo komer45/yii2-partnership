@@ -42,7 +42,7 @@ class PartnerController extends Controller
                         'roles' => $this->module->adminRoles,
                     ],
 					[
-						'actions' => ['become-partner'],
+						'actions' => ['become-partner', 'index'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

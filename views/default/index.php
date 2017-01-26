@@ -21,7 +21,7 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td><nobr><a href=<?=Yii::$app->request->hostInfo.'/partnership/partner/'?>>/partnership/partner/admin</a></nobr></td>
+		<td><nobr><a href=<?=Yii::$app->request->hostInfo.'/partnership/partner/'?>>/partnership/partner</a></nobr></td>
 		<td>
 			Страница партнера. партнер видит список переходов пользователей по его ссылке.
 		</td>
