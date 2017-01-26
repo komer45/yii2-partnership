@@ -85,7 +85,7 @@ class PartnerController extends Controller
 			'attributes' => [
 				'status' => [
 					'default' => SORT_DESC,
-					'label' => 'Ñòàòóñ',
+					'label' => 'Ð¡Ñ‚Ð°Ñ‚ÑƒÑ',
 				],
 			],	
 		]);
@@ -102,7 +102,7 @@ class PartnerController extends Controller
 			'attributes' => [
 				'user_id' => [
 					'default' => SORT_DESC,
-					'label' => 'Ðåôåðàë',
+					'label' => 'Ð ÐµÑ„ÐµÑ€Ð°Ð»',
 				],
 			],	
 		]);
@@ -118,7 +118,7 @@ class PartnerController extends Controller
 
 	
 	
-	public function actionAdmin()		//äëÿ àäìèíà - óïðàâëåíèå àêòèâíîñòüþ ïàðòíåðîâ
+	public function actionAdmin()		//Ð´Ð»Ñ Ð°Ð´Ð¼Ð¸Ð½Ð° - ÑƒÐ¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð°ÐºÑ‚Ð¸Ð²Ð½Ð¾ÑÑ‚ÑŒÑŽ Ð¿Ð°Ñ€Ñ‚Ð½ÐµÑ€Ð¾Ð²
     {
         $searchModel = new SearchPartner();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -127,7 +127,7 @@ class PartnerController extends Controller
 			'attributes' => [
 				'status' => [
 					'default' => SORT_DESC,
-					'label' => 'Ñòàòóñ',
+					'label' => 'Ð¡Ñ‚Ð°Ñ‚ÑƒÑ',
 				],
 			],	
 		]);
@@ -136,7 +136,7 @@ class PartnerController extends Controller
 			'attributes' => [
 				'user_id' => [
 					'default' => SORT_DESC,
-					'label' => 'Ïîëüçîâàòåëü',
+					'label' => 'ÐŸÐ¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒ',
 				],
 			],	
 		]);
@@ -158,7 +158,7 @@ class PartnerController extends Controller
 	
 	
 	
-	public function actionActivate($statusTo, $partner)	//äëÿ àäìèíà - àêòèâèðîâàòü/äåàêòèâèðîâàèü ïåðåõîä
+	public function actionActivate($statusTo, $partner)	//Ð´Ð»Ñ Ð°Ð´Ð¼Ð¸Ð½Ð° - Ð°ÐºÑ‚Ð¸Ð²Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ/Ð´ÐµÐ°ÐºÑ‚Ð¸Ð²Ð¸Ñ€Ð¾Ð²Ð°Ð¸ÑŒ Ð¿ÐµÑ€ÐµÑ…Ð¾Ð´
     {
 		$model = Partner::find()->where(['id' => $partner])->one();
 		if ($statusTo == 0){
@@ -207,7 +207,7 @@ class PartnerController extends Controller
 			'attributes' => [
 				'user_id' => [
 					'default' => SORT_DESC,
-					'label' => 'Ðåôåðàë',
+					'label' => 'Ð ÐµÑ„ÐµÑ€Ð°Ð»',
 				],
 			],	
 		]);
@@ -216,7 +216,7 @@ class PartnerController extends Controller
 			'attributes' => [
 				'status' => [
 					'default' => SORT_DESC,
-					'label' => 'Ñòàòóñ',
+					'label' => 'Ð¡Ñ‚Ð°Ñ‚ÑƒÑ',
 				],
 			],	
 		]);
@@ -226,7 +226,7 @@ class PartnerController extends Controller
 			'attributes' => [
 				'order_id' => [
 					'default' => SORT_DESC,
-					'label' => 'Id çàêàçà',
+					'label' => 'Id Ð·Ð°ÐºÐ°Ð·Ð°',
 				],
 			],	
 		]);
@@ -297,9 +297,9 @@ class PartnerController extends Controller
         return $this->redirect(['index']);
     }
 	
-	public function actionMakePayment($paymentId)					//ïî íàæàòèþ íà êíîïêó "Âûïëàòèòü |ïàðòíåðó|"
+	public function actionMakePayment($paymentId)					//Ð¿Ð¾ Ð½Ð°Ð¶Ð°Ñ‚Ð¸ÑŽ Ð½Ð° ÐºÐ½Ð¾Ð¿ÐºÑƒ "Ð’Ñ‹Ð¿Ð»Ð°Ñ‚Ð¸Ñ‚ÑŒ |Ð¿Ð°Ñ€Ñ‚Ð½ÐµÑ€Ñƒ|"
 	{
-		$pay = Yii::$app->Partnership->makePayment($paymentId);		//îòïðàâëÿåì â ôóíêöèþ makePayment($paymentId) â ìîäóëü Partnership.php
+		$pay = Yii::$app->Partnership->makePayment($paymentId);		//Ð¾Ñ‚Ð¿Ñ€Ð°Ð²Ð»ÑÐµÐ¼ Ð² Ñ„ÑƒÐ½ÐºÑ†Ð¸ÑŽ makePayment($paymentId) Ð² Ð¼Ð¾Ð´ÑƒÐ»ÑŒ Partnership.php
 		return $this->redirect(Yii::$app->request->referrer);
 	}
 
@@ -363,25 +363,25 @@ class PartnerController extends Controller
 	public function actionReferrer($code = null)
 	{
 		$request = Yii::$app->request;
-		$urlTo = Url::current();								//ñþäà ïåðåøåë ïîëüçîâàòåëü (ñòðàíèöÿ ïî ïåðåñûëêå)
-		$userId = Yii::$app->user->id;							//ïîëó÷àåì id þçåðà
-		$urlFrom = Yii::$app->request->referrer;				//ññûëàåìñÿ íà ïðåäûäóùóþ ñòðàíèöó $_SERVER['HTTP_REFERER'];
-		Yii::$app->session['url_from'] = $urlFrom;						//çàïèñûâàåì ïåðåõîä â ñåññèþ
-		$ip =  $_SERVER["REMOTE_ADDR"];							//îïðåäåëÿåì ip þçåðà
+		$urlTo = Url::current();								//ÑÑŽÐ´Ð° Ð¿ÐµÑ€ÐµÑˆÐµÐ» Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒ (ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ Ð¿Ð¾ Ð¿ÐµÑ€ÐµÑÑ‹Ð»ÐºÐµ)
+		$userId = Yii::$app->user->id;							//Ð¿Ð¾Ð»ÑƒÑ‡Ð°ÐµÐ¼ id ÑŽÐ·ÐµÑ€Ð°
+		$urlFrom = Yii::$app->request->referrer;				//ÑÑÑ‹Ð»Ð°ÐµÐ¼ÑÑ Ð½Ð° Ð¿Ñ€ÐµÐ´Ñ‹Ð´ÑƒÑ‰ÑƒÑŽ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñƒ $_SERVER['HTTP_REFERER'];
+		Yii::$app->session['url_from'] = $urlFrom;						//Ð·Ð°Ð¿Ð¸ÑÑ‹Ð²Ð°ÐµÐ¼ Ð¿ÐµÑ€ÐµÑ…Ð¾Ð´ Ð² ÑÐµÑÑÐ¸ÑŽ
+		$ip =  $_SERVER["REMOTE_ADDR"];							//Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÑÐµÐ¼ ip ÑŽÐ·ÐµÑ€Ð°
 		if($code){
-			$partner = Partner::find()->where(['code' => $code])->one();				//íàõîäèì ïàðòíåðà
+			$partner = Partner::find()->where(['code' => $code])->one();				//Ð½Ð°Ñ…Ð¾Ð´Ð¸Ð¼ Ð¿Ð°Ñ€Ñ‚Ð½ÐµÑ€Ð°
 			if($partner){
-				Yii::$app->session['code'] = $partner->code;						//çàïèøåì êîä ïàðòíåðà â ñåññèþ
+				Yii::$app->session['code'] = $partner->code;						//Ð·Ð°Ð¿Ð¸ÑˆÐµÐ¼ ÐºÐ¾Ð´ Ð¿Ð°Ñ€Ñ‚Ð½ÐµÑ€Ð° Ð² ÑÐµÑÑÐ¸ÑŽ
 			}
 		}else {$partner = 0;}
-		/*ïðîâåäåì ðàáîòó ñ coockie*/
+		/*Ð¿Ñ€Ð¾Ð²ÐµÐ´ÐµÐ¼ Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ Ñ coockie*/
 		if (!isset(Yii::$app->request->cookies['tmp_user_id'])) {
 			Yii::$app->response->cookies->add(new \yii\web\Cookie([
 				'name' => 'tmp_user_id',
 				'value' => md5($ip+microtime())
 			]));
 		} 
-		/*çàêîí÷èì ðàáîòó ñ coockie*/		
+		/*Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð¼ Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ Ñ coockie*/		
 		Yii::$app->Partnership->addFollow($userId, $urlFrom, $urlTo, $ip, $partner);
 		return $this->redirect(Yii::$app->homeUrl);
 	}
