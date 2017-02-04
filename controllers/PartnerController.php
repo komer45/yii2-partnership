@@ -147,12 +147,17 @@ class PartnerController extends Controller
 		$referalsIds = array_unique($referalsIds);
 		$users = $userModel::find()->where(['id' => $referalsIds])->all();
 		
+		$payments = Payment::find()->where(['status' => '0'])->all();
+		$payments = ArrayHelper::getColumn($payments, 'partner_id');
+		$payments = array_unique($payments);
+		
         return $this->render('admin', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
 			'sortStatus' => $sortStatus,
 			'users' => $users,
 			'sortUser' => $sortUser,
+			'payments' => $payments,
         ]);
     }
 	
@@ -231,7 +236,7 @@ class PartnerController extends Controller
 			],	
 		]);
 		
-		
+
         return $this->render('view', [
 			'paymentDataProvider' => $paymentDataProvider,
 			'profitDataProvider' => $orderHistoryDataProvider,

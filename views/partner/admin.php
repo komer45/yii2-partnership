@@ -7,12 +7,23 @@ use yii\helpers\ArrayHelper;
 use yii\data\Sort;
 
 $this->title = "Партнеры";
-
+//var_dump($payments);
 ?>
 <div class="partner-admin">
     <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+		
+		'rowOptions' => function ($model) use ($payments){
+				foreach($payments as $payment) {
+					if($model->id == $payment){
+						return ['style' => 'background-color:#FFFACD;'];
+					} else {
+						return ['style' => 'background-color:#F5FFFA;'];
+					}
+				}
+			},
+
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -87,9 +98,9 @@ $this->title = "Партнеры";
 				'value' => function($model) {
 					return Html::a('Переходы',		 Url::to(['/partnership/follow/view', 'id' => $model->id, 'pCode' => $model->code]), ['class' => 'btn btn-default']);
 				}
-			]
+			],
             //['class' => 'yii\grid\ActionColumn', 'template' => '{update} {delete}',  'buttonOptions' => ['class' => 'btn btn-default'], 'options' => ['style' => 'width: 65px;']]
         ],
-    ]); ?>
+    ]);?>
 
 </div>
